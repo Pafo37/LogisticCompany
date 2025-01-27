@@ -14,13 +14,17 @@ import lombok.Setter;
 @Table(name = "shipment")
 public class Shipment extends BaseEntity {
 
-    private String sender;
-    private String receiver;
+    private String senderName;
+    private String receiverName;
     private String deliveryAddress;
     private double weight;
+    private double price;
+    private boolean deliveredToOffice;
 
-    @ManyToOne //TODO: check wtf is that
-    private Company company;
+    @ManyToOne
+    private Client client;
 
-    // constructors, getters, setters
+   /* @ManyToOne //TODO: check wtf is that
+    private Company company;*/
+
 }

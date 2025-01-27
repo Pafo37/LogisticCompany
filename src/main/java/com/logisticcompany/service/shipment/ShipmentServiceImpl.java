@@ -22,4 +22,14 @@ public class ShipmentServiceImpl implements ShipmentService {
     public Shipment getShipmentById(long id) {
         return shipmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid shipment id" + id));
     }
+
+    @Override
+    public void saveShipment(Shipment shipment) {
+        shipmentRepository.save(shipment);
+    }
+
+    @Override
+    public void deleteShipment(Shipment shipment) {
+        shipmentRepository.delete(shipment);
+    }
 }

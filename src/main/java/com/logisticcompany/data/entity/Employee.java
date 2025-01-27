@@ -15,8 +15,11 @@ import lombok.Setter;
 public class Employee extends BaseEntity {
 
     private String name;
+    private String role;  //TODO: make enum - courier and office worker or smth
+    private String email;
+    private String phone;
 
-    @ManyToOne //TODO:check wtf is that
-    private Company company;
+   /* @ManyToOne //TODO:check wtf is that
+    private Company company;*/
 
 }

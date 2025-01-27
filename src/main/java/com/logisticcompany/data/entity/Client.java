@@ -10,9 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "company")
-public class Company extends BaseEntity{
-
+@Table(name = "client")
+public class Client extends BaseEntity {
     private String name;
-    private String location;
+    private String email;
+    private String phone;
+    private String address;
 }
