@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shipments</title>
+</head>
+<body>
+<h1>Shipments List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Sender</th>
+        <th>Receiver</th>
+        <th>Delivery Address</th>
+        <th>Weight</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="shipment : ${shipments}">
+        <td th:text="${shipment.id}">1</td>
+        <td th:text="${shipment.senderName}">John Doe</td>
+        <td th:text="${shipment.receiverName}">Jane Doe</td>
+        <td th:text="${shipment.deliveryAddress}">456 Elm St</td>
+        <td th:text="${shipment.weight}">5.0</td>
+        <td th:text="${shipment.price}">10.50</td>
+        <td>
+            <a th:href="@{/shipments/edit/{id}(id=${shipment.id})}">Edit</a>
+            <a th:href="@{/shipments/delete/{id}(id=${shipment.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/shipments/add}">Add New Shipment</a>
+</body>
+</html>

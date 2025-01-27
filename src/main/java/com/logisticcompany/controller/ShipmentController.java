@@ -1,27 +1,58 @@
 package com.logisticcompany.controller;
 
 import com.logisticcompany.data.entity.Shipment;
+import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.shipment.ShipmentService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @AllArgsConstructor
+@RequestMapping("/shipments")
 public class ShipmentController {
 
-    private final ShipmentService shipmentService;
+    private ShipmentService shipmentService;
 
-    @GetMapping("api/shipments")
-    List<Shipment> getAllShipments() {
-        return shipmentService.getAllShipments();
+    private ClientService clientService;
+
+    @GetMapping
+    public String getAllShipments(Model model) {
+        model.addAttribute("shipments", shipmentService.getAllShipments());
+        return "shipments";
     }
 
-    @GetMapping("api/shipments/{id}")
-    Shipment getShipmentById(@PathVariable("id") long id) {
-        return shipmentService.getShipmentById(id);
+    @GetMapping("/add")
+    public String showAddShipmentForm(Model model) {
+        model.addAttribute("shipment", new Shipment());
+        model.addAttribute("clients", clientService.getAllClients());
+        return "add_shipment";
+    }
+
+    @PostMapping("/add")
+    public String addShipment(@ModelAttribute Shipment shipment) {
+        shipmentService.saveShipment(shipment);
+        return "redirect:/shipments";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditShipmentForm(@PathVariable Long id, Model model) {
+        model.addAttribute("shipment", shipmentService.getShipmentById(id));
+        model.addAttribute("clients", clientService.getAllClients());
+        return "edit_shipment";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String ediShipment(@PathVariable Long id, @ModelAttribute Shipment shipment) {
+        shipment.setId(id);
+        shipmentService.saveShipment(shipment);
+        return "redirect:/shipments";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteShipment(@PathVariable Long id) {
+        shipmentService.deleteShipment(id);
+        return "redirect:/shipments";
     }
 }

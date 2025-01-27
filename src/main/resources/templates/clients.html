@@ -16,7 +16,7 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Iterate over the list of clients -->
+
     <tr th:each="client : ${clients}">
         <td th:text="${client.id}">1</td>
         <td th:text="${client.name}">John Doe</td>
@@ -31,7 +31,6 @@
     </tbody>
 </table>
 
-<!-- Link to add a new client -->
 <a th:href="@{/clients/add}">Add New Client</a>
 </body>
 </html>

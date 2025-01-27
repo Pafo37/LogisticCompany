@@ -12,5 +12,15 @@ public interface ShipmentService {
 
     void saveShipment(Shipment shipment);
 
-    void deleteShipment(Shipment shipment);
+    void deleteShipment(Long id);
+
+    List<Shipment> getShipmentsByClient(Long clientId);
+
+    List<Shipment> getShipmentsDeliveredToOffice();
+
+    List<Shipment> getShipmentsDeliveredToAddress();
+
+    List<Shipment> getShipmentsByWeightGreaterThan(double weight);
+
+    List<Shipment> searchShipmentsBySenderName(String senderName);
 }
