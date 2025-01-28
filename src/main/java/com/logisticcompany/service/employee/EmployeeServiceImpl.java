@@ -22,4 +22,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee getEmployeeById(long id) {
         return employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid employee id" + id));
     }
+
+    @Override
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    @Override
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Employee> findEmployeesByRole(String role) {
+        return employeeRepository.findByRole(role);
+    }
+
+    @Override
+    public List<Employee> searchEmployeesByName(String name) {
+        return employeeRepository.findByNameContaining(name);
+    }
 }

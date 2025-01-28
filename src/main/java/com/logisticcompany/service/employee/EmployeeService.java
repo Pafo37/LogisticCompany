@@ -10,4 +10,11 @@ public interface EmployeeService {
 
     Employee getEmployeeById(long id);
 
+    Employee saveEmployee(Employee employee);
+
+    void deleteEmployee(Long id);
+
+    List<Employee> findEmployeesByRole(String role);
+
+    List<Employee> searchEmployeesByName(String name);
 }
