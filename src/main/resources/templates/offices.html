@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Offices</title>
+</head>
+<body>
+<h1>Office List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="office : ${offices}">
+        <td th:text="${office.id}">1</td>
+        <td th:text="${office.name}">Main Office</td>
+        <td th:text="${office.address}">123 Main St</td>
+        <td>
+            <a th:href="@{/offices/edit/{id}(id=${office.id})}">Edit</a>
+            <a th:href="@{/offices/delete/{id}(id=${office.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/offices/add}">Add New Office</a>
+</body>
+</html>

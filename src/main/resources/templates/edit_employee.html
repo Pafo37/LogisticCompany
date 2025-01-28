@@ -6,15 +6,12 @@
 <body>
 <h1>Edit Employee</h1>
 <form th:action="@{/employees/edit/{id}(id=${employee.id})}" th:object="${employee}" method="post">
-    <!-- Hidden field for employee ID -->
     <input type="hidden" th:field="*{id}" />
 
-    <!-- Name -->
     <label for="name">Name:</label>
     <input type="text" id="name" th:field="*{name}" required>
     <br>
 
-    <!-- Role -->
     <label for="role">Role:</label>
     <select id="role" th:field="*{role}" required>
         <option value="COURIER">Courier</option>
@@ -22,21 +19,17 @@
     </select>
     <br>
 
-    <!-- Email -->
     <label for="email">Email:</label>
     <input type="email" id="email" th:field="*{email}" required>
     <br>
 
-    <!-- Phone -->
     <label for="phone">Phone:</label>
     <input type="text" id="phone" th:field="*{phone}" required>
     <br>
 
-    <!-- Submit Button -->
     <button type="submit">Save Changes</button>
 </form>
 
-<!-- Link to go back to the employee list -->
 <a th:href="@{/employees}">Back to Employee List</a>
 </body>
 </html>

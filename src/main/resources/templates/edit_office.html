@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Office</title>
+</head>
+<body>
+<h1>Edit Office</h1>
+<form th:action="@{/offices/edit/{id}(id=${office.id})}" th:object="${office}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <br>
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" th:field="*{address}" required>
+    <br>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<a th:href="@{/offices}">Back to Office List</a>
+</body>
+</html>
