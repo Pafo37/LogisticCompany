@@ -1,6 +1,7 @@
 package com.logisticcompany.service.employee;
 
 import com.logisticcompany.data.entity.Employee;
+import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,5 +42,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> searchEmployeesByName(String name) {
         return employeeRepository.findByNameContaining(name);
+    }
+
+    @Override
+    public Employee findByUser(User user) {
+        return employeeRepository.findByUser(user);
     }
 }

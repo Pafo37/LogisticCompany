@@ -1,6 +1,5 @@
 package com.logisticcompany.service.shipment;
 
-import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.service.client.ClientService;
@@ -35,12 +34,6 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public void deleteShipment(Long id) {
         shipmentRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Shipment> getShipmentsByClient(Long clientId) {
-        Client client = clientService.getClientById(clientId);
-        return shipmentRepository.findByClient(client);
     }
 
     @Override

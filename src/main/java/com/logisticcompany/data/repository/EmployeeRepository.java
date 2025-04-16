@@ -1,6 +1,7 @@
 package com.logisticcompany.data.repository;
 
 import com.logisticcompany.data.entity.Employee;
+import com.logisticcompany.data.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByRole(String role);
 
     List<Employee> findByNameContaining(String name);
+
+    Employee findByUser(User user);
 
 }

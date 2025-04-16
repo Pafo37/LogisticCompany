@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Set;
 
 @Getter
@@ -28,4 +30,15 @@ public class User implements UserDetails {
     private boolean accountNonLocked = true;
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER) //TODO: ask wtf is this
     private Set<Role> authorities;
+
+    @OneToOne(mappedBy = "user")
+    private Client client;
+
+    @OneToOne(mappedBy = "user")
+    private Employee employee;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
 }

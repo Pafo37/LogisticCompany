@@ -1,11 +1,14 @@
 package com.logisticcompany.data.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,17 +17,28 @@ import lombok.Setter;
 @Table(name = "shipment")
 public class Shipment extends BaseEntity {
 
-    private String senderName;
-    private String receiverName;
     private String deliveryAddress;
     private double weight;
     private double price;
     private boolean deliveredToOffice;
 
-    @ManyToOne
-    private Client client;
+    private LocalDateTime sentDate;
 
-   /* @ManyToOne //TODO: check wtf is that
-    private Company company;*/
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private Client sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private Client receiver;
+
+    @ManyToOne
+    private Office sourceOffice;
+
+    @ManyToOne
+    private Office destinationOffice;
+
+    @ManyToOne
+    private Employee registeredBy;
 
 }

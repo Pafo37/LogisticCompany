@@ -1,12 +1,22 @@
 package com.logisticcompany.controller;
 
+import com.logisticcompany.data.dto.ShipmentDTO;
+import com.logisticcompany.data.entity.Client;
+import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.Shipment;
+import com.logisticcompany.data.entity.User;
 import com.logisticcompany.service.client.ClientService;
+import com.logisticcompany.service.employee.EmployeeService;
+import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.shipment.ShipmentService;
+import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Controller
 @AllArgsConstructor
@@ -17,6 +27,12 @@ public class ShipmentController {
 
     private ClientService clientService;
 
+    private OfficeService officeService;
+
+    private UserService userService;
+
+    private EmployeeService employeeService;
+
     @GetMapping
     public String getAllShipments(Model model) {
         model.addAttribute("shipments", shipmentService.getAllShipments());
@@ -25,34 +41,71 @@ public class ShipmentController {
 
     @GetMapping("/add")
     public String showAddShipmentForm(Model model) {
-        model.addAttribute("shipment", new Shipment());
+        model.addAttribute("shipment", new ShipmentDTO());
         model.addAttribute("clients", clientService.getAllClients());
         return "add_shipment";
     }
 
     @PostMapping("/add")
-    public String addShipment(@ModelAttribute Shipment shipment) {
+    public String addShipment(@ModelAttribute ShipmentDTO shipmentDTO, Principal principal) {
+        Shipment shipment = new Shipment();
+        shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
+        shipment.setWeight(shipmentDTO.getWeight());
+        shipment.setDeliveredToOffice(shipmentDTO.isDeliveredToOffice());
+
+        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
+        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
+
+        shipment.setSender(sender);
+        shipment.setReceiver(receiver);
+
+        // Auto-calculate price
+        double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
+        shipment.setPrice(price);
+
+        // Optionally set registeredBy
+        shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
+
         shipmentService.saveShipment(shipment);
         return "redirect:/shipments";
     }
+
 
     @GetMapping("/edit/{id}")
     public String showEditShipmentForm(@PathVariable Long id, Model model) {
         model.addAttribute("shipment", shipmentService.getShipmentById(id));
         model.addAttribute("clients", clientService.getAllClients());
+        model.addAttribute("offices", officeService.getAllOffices());
         return "edit_shipment";
     }
 
     @PostMapping("/edit/{id}")
-    public String ediShipment(@PathVariable Long id, @ModelAttribute Shipment shipment) {
+    public String editShipment(@PathVariable Long id, @ModelAttribute Shipment shipment, Principal principal) {
         shipment.setId(id);
+        shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
+        shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
+
         shipmentService.saveShipment(shipment);
         return "redirect:/shipments";
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteShipment(@PathVariable Long id) {
         shipmentService.deleteShipment(id);
         return "redirect:/shipments";
     }
+
+    private double calculatePrice(double weight, boolean deliveredToOffice) {
+        double baseRatePerKg = 0.5;
+        double deliveryFee = deliveredToOffice ? 0.0 : 5.0;
+        return (weight * baseRatePerKg) + deliveryFee;
+    }
+
+    private Employee getEmployeeFromPrincipal(Principal principal) {
+        String username = principal.getName(); // comes from Spring Security
+        User user = userService.findByUsername(username);
+        return employeeService.findByUser(user);
+    }
+
 }

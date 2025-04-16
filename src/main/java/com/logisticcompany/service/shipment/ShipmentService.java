@@ -14,8 +14,6 @@ public interface ShipmentService {
 
     void deleteShipment(Long id);
 
-    List<Shipment> getShipmentsByClient(Long clientId);
-
     List<Shipment> getShipmentsDeliveredToOffice();
 
     List<Shipment> getShipmentsDeliveredToAddress();
