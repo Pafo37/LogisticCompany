@@ -6,22 +6,22 @@
 <body>
 <h1>Edit Shipment</h1>
 
-<form th:action="@{/shipments/edit/{id}(id=${shipment.id})}" th:object="${shipment}" method="post">
+<form th:action="@{/shipments/edit/{id}(id=${shipmentId})}" th:object="${shipment}" method="post">
     <label>Sender:</label>
-    <select th:field="*{sender}" required>
+    <select th:field="*{senderId}" required>
         <option th:each="client : ${clients}"
                 th:value="${client.id}"
                 th:text="${client.name}"
-                th:selected="${client.id == shipment.sender?.id}">
+                th:selected="${client.id == shipment.senderId}">
         </option>
     </select><br/>
 
     <label>Receiver:</label>
-    <select th:field="*{receiver}" required>
+    <select th:field="*{receiverId}" required>
         <option th:each="client : ${clients}"
                 th:value="${client.id}"
                 th:text="${client.name}"
-                th:selected="${client.id == shipment.receiver?.id}">
+                th:selected="${client.id == shipment.receiverId}">
         </option>
     </select><br/>
 

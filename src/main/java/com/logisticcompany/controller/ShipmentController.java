@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 
 @Controller
 @AllArgsConstructor
@@ -73,22 +72,41 @@ public class ShipmentController {
 
     @GetMapping("/edit/{id}")
     public String showEditShipmentForm(@PathVariable Long id, Model model) {
-        model.addAttribute("shipment", shipmentService.getShipmentById(id));
+        Shipment shipment = shipmentService.getShipmentById(id);
+
+        ShipmentDTO shipmentDTO = new ShipmentDTO();
+        shipmentDTO.setSenderId(shipment.getSender().getId());
+        shipmentDTO.setReceiverId(shipment.getReceiver().getId());
+        shipmentDTO.setDeliveryAddress(shipment.getDeliveryAddress());
+        shipmentDTO.setWeight(shipment.getWeight());
+        shipmentDTO.setDeliveredToOffice(shipment.isDeliveredToOffice());
+
+        model.addAttribute("shipment", shipmentDTO);
         model.addAttribute("clients", clientService.getAllClients());
-        model.addAttribute("offices", officeService.getAllOffices());
+        model.addAttribute("shipmentId", id); // used in form action
         return "edit_shipment";
     }
 
     @PostMapping("/edit/{id}")
-    public String editShipment(@PathVariable Long id, @ModelAttribute Shipment shipment, Principal principal) {
-        shipment.setId(id);
+    public String editShipment(@PathVariable Long id, @ModelAttribute ShipmentDTO shipmentDTO, Principal principal) {
+        Shipment shipment = shipmentService.getShipmentById(id);
+
+        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
+        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
+
+        shipment.setSender(sender);
+        shipment.setReceiver(receiver);
+        shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
+        shipment.setWeight(shipmentDTO.getWeight());
+        shipment.setDeliveredToOffice(shipmentDTO.isDeliveredToOffice());
+
+        double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
+        shipment.setPrice(price);
         shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
-        shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
 
         shipmentService.saveShipment(shipment);
         return "redirect:/shipments";
     }
-
 
     @GetMapping("/delete/{id}")
     public String deleteShipment(@PathVariable Long id) {
