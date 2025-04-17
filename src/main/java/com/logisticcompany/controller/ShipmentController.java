@@ -93,17 +93,23 @@ public class ShipmentController {
     }
 
 
-
+    //TODO:Add some mapper
     @GetMapping("/edit/{id}")
     public String showEditShipmentForm(@PathVariable Long id, Model model) {
         Shipment shipment = shipmentService.getShipmentById(id);
 
         ShipmentDTO shipmentDTO = new ShipmentDTO();
+        shipmentDTO.setId(shipment.getId());
         shipmentDTO.setSenderId(shipment.getSender().getId());
         shipmentDTO.setReceiverId(shipment.getReceiver().getId());
         shipmentDTO.setDeliveryAddress(shipment.getDeliveryAddress());
         shipmentDTO.setWeight(shipment.getWeight());
         shipmentDTO.setDeliveredToOffice(shipment.isDeliveredToOffice());
+
+        // ✅ Set deliveryOfficeId if shipment is delivered to office
+        if (shipment.getDeliveryOffice() != null) {
+            shipmentDTO.setDeliveryOfficeId(shipment.getDeliveryOffice().getId());
+        }
 
         model.addAttribute("shipment", shipmentDTO);
         model.addAttribute("clients", clientService.getAllClients());
@@ -113,25 +119,43 @@ public class ShipmentController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editShipment(@PathVariable Long id, @ModelAttribute ShipmentDTO shipmentDTO, Principal principal) {
+    public String editShipment(@PathVariable Long id, @ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
+        if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
+                || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
+
+            model.addAttribute("errorMessage", "You must either select a delivery office or provide a delivery address.");
+            model.addAttribute("clients", clientService.getAllClients());
+            model.addAttribute("offices", officeService.getAllOffices());
+            return "edit_shipment";
+        }
+
         Shipment shipment = shipmentService.getShipmentById(id);
-
-        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
-        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
-
-        shipment.setSender(sender);
-        shipment.setReceiver(receiver);
         shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
         shipment.setWeight(shipmentDTO.getWeight());
         shipment.setDeliveredToOffice(shipmentDTO.isDeliveredToOffice());
 
+        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
+        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
+        shipment.setSender(sender);
+        shipment.setReceiver(receiver);
+
+        if (shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() != null) {
+            Office office = officeService.getOfficeById(shipmentDTO.getDeliveryOfficeId());
+            shipment.setDeliveryOffice(office);
+        } else {
+            shipment.setDeliveryOffice(null); // Clear it if not delivering to office
+        }
+
         double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
         shipment.setPrice(price);
+
         shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
 
         shipmentService.saveShipment(shipment);
+
         return "redirect:/shipments";
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteShipment(@PathVariable Long id) {
