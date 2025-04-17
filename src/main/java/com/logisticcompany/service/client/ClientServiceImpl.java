@@ -1,6 +1,7 @@
 package com.logisticcompany.service.client;
 
 import com.logisticcompany.data.entity.Client;
+import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,5 +48,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> findClientsByPhone(String phone) {
         return clientRepository.findByPhone(phone);
+    }
+
+    @Override
+    public Client getByUser(User user) {
+        return clientRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Client not found for user: " + user.getUsername()));
     }
 }

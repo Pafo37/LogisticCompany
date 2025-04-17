@@ -1,6 +1,7 @@
 package com.logisticcompany.data.repository;
 
 import com.logisticcompany.data.entity.Client;
+import com.logisticcompany.data.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByPhone(String phone);
 
     List<Client> findByAddressContaining(String address);
+
+    Optional<Client> findByUser(User user);
 }

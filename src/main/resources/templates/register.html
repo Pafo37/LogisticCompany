@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Register</title>
-</head>
 <body>
 <h1>Register</h1>
+
+<!-- Error Message -->
+<div th:if="${errorMessage}" style="color:red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <form th:action="@{/register}" th:object="${user}" method="post">
     <div>
         <label>Username:</label>
@@ -24,4 +25,3 @@
     <button type="submit">Register</button>
 </form>
 </body>
-</html>

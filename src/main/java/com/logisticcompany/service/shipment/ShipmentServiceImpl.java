@@ -1,5 +1,6 @@
 package com.logisticcompany.service.shipment;
 
+import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.service.client.ClientService;
@@ -54,5 +55,10 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public List<Shipment> searchShipmentsBySenderName(String senderName) {
         return shipmentRepository.findBySenderNameContaining(senderName);
+    }
+
+    @Override
+    public List<Shipment> getShipmentsByClient(Client client) {
+        return shipmentRepository.findBySenderOrReceiver(client, client);
     }
 }

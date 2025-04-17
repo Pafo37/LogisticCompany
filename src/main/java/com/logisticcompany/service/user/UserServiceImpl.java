@@ -28,36 +28,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists: " + user.getUsername());
+        }
+
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Fetch and assign role entity
-        String roleName = user.getRole(); // e.g., "ROLE_CLIENT" or "ROLE_EMPLOYEE"
-        Role role = roleRepository.findByAuthority(roleName)
+        // Fetch or create role
+        Role role = roleRepository.findByAuthority(user.getRole())
                 .orElseGet(() -> {
                     Role newRole = new Role();
-                    newRole.setAuthority(roleName);
+                    newRole.setAuthority(user.getRole());
                     return roleRepository.save(newRole);
                 });
 
         user.setAuthorities(Set.of(role));
-
-        // Security flags
-        Client client = new Client();
         user.setEnabled(true);
-        user.setAccountNonLocked(true);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
+        user.setAccountNonLocked(true);
 
-        // Save user first (so it gets an ID)
         User savedUser = userRepository.save(user);
 
-        // Optional: create linked domain entity
-        if ("ROLE_CLIENT".equals(roleName)) {
+        // Optional: create Client/Employee
+        if ("ROLE_CLIENT".equals(user.getRole())) {
+            Client client = new Client();
             client.setName(user.getUsername());
             client.setUser(savedUser);
             clientRepository.save(client);
-        } else if ("ROLE_EMPLOYEE".equals(roleName)) {
+        } else if ("ROLE_EMPLOYEE".equals(user.getRole())) {
             Employee employee = new Employee();
             employee.setName(user.getUsername());
             employee.setUser(savedUser);
@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
 
         return savedUser;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

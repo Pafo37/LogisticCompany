@@ -33,8 +33,20 @@ public class ShipmentController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public String getAllShipments(Model model) {
-        model.addAttribute("shipments", shipmentService.getAllShipments());
+    public String getAllShipments(Model model, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+
+        boolean isEmployee = user.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        if (isEmployee) {
+            model.addAttribute("shipments", shipmentService.getAllShipments());
+        } else {
+            Client client = clientService.getByUser(user);
+            model.addAttribute("shipments", shipmentService.getShipmentsByClient(client));
+        }
+
         return "shipments";
     }
 
