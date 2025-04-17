@@ -4,21 +4,13 @@ import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
-    List<Shipment> findByDeliveredToOfficeTrue();
-
-    List<Shipment> findByDeliveredToOfficeFalse();
-
-    List<Shipment> findByWeightGreaterThan(double weight);
-
-    List<Shipment> findBySenderNameContaining(String senderName);
-
     List<Shipment> findBySenderOrReceiver(Client sender, Client receiver);
 
-    List<Shipment> findByReceiverNameContaining(String receiverName);
+    List<Shipment> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    List<Shipment> findByDeliveryAddressContaining(String deliveryAddress);
 }

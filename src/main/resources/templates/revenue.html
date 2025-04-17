@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Revenue Report</title>
+</head>
+<body>
+<h1>Revenue Report</h1>
+
+<form th:action="@{/revenue}" method="post">
+    <div>
+        <label>Start Date:</label>
+        <input type="date" name="startDate" required>
+    </div>
+    <div>
+        <label>End Date:</label>
+        <input type="date" name="endDate" required>
+    </div>
+    <button type="submit">Calculate Revenue</button>
+</form>
+
+<div th:if="${revenue != null}">
+    <h2>Revenue from <span th:text="${startDate}"></span> to <span th:text="${endDate}"></span>:</h2>
+    <h3 th:text="'€' + ${revenue}">€0</h3>
+</div>
+
+<a href="/clients">Back to Clients</a>
+</body>
+</html>

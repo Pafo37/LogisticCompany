@@ -7,6 +7,8 @@ import com.logisticcompany.service.client.ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -38,27 +40,22 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public List<Shipment> getShipmentsDeliveredToOffice() {
-        return shipmentRepository.findByDeliveredToOfficeTrue();
-    }
-
-    @Override
-    public List<Shipment> getShipmentsDeliveredToAddress() {
-        return shipmentRepository.findByDeliveredToOfficeFalse();
-    }
-
-    @Override
-    public List<Shipment> getShipmentsByWeightGreaterThan(double weight) {
-        return shipmentRepository.findByWeightGreaterThan(weight);
-    }
-
-    @Override
-    public List<Shipment> searchShipmentsBySenderName(String senderName) {
-        return shipmentRepository.findBySenderNameContaining(senderName);
-    }
-
-    @Override
     public List<Shipment> getShipmentsByClient(Client client) {
         return shipmentRepository.findBySenderOrReceiver(client, client);
     }
+
+    @Override
+    public List<Shipment> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return shipmentRepository.findAllByCreatedAtBetween(
+                startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+    }
+
+    @Override
+    public BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
+        List<Shipment> shipments = findShipmentsBetweenDates(startDate, endDate);
+        return shipments.stream()
+                .map(shipment -> BigDecimal.valueOf(shipment.getPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }
