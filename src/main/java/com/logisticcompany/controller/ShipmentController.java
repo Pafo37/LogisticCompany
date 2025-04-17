@@ -1,10 +1,7 @@
 package com.logisticcompany.controller;
 
 import com.logisticcompany.data.dto.ShipmentDTO;
-import com.logisticcompany.data.entity.Client;
-import com.logisticcompany.data.entity.Employee;
-import com.logisticcompany.data.entity.Shipment;
-import com.logisticcompany.data.entity.User;
+import com.logisticcompany.data.entity.*;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
@@ -54,11 +51,22 @@ public class ShipmentController {
     public String showAddShipmentForm(Model model) {
         model.addAttribute("shipment", new ShipmentDTO());
         model.addAttribute("clients", clientService.getAllClients());
+        model.addAttribute("offices", officeService.getAllOffices());
         return "add_shipment";
     }
 
     @PostMapping("/add")
-    public String addShipment(@ModelAttribute ShipmentDTO shipmentDTO, Principal principal) {
+    public String addShipment(@ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
+
+        if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
+                || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
+
+            model.addAttribute("errorMessage", "You must either select a delivery office or provide a delivery address.");
+            model.addAttribute("offices", officeService.getAllOffices());
+            model.addAttribute("clients", clientService.getAllClients());
+            return "add_shipment";
+        }
+
         Shipment shipment = new Shipment();
         shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
         shipment.setWeight(shipmentDTO.getWeight());
@@ -66,20 +74,24 @@ public class ShipmentController {
 
         Client sender = clientService.getClientById(shipmentDTO.getSenderId());
         Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
-
         shipment.setSender(sender);
         shipment.setReceiver(receiver);
 
-        // Auto-calculate price
+        // Fetch Office only if deliveredToOffice = true
+        if (shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() != null) {
+            Office office = officeService.getOfficeById(shipmentDTO.getDeliveryOfficeId());
+            shipment.setDeliveryOffice(office);
+        }
+
+        // Price calculation (if you have it)
         double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
         shipment.setPrice(price);
 
-        // Optionally set registeredBy
         shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
-
         shipmentService.saveShipment(shipment);
         return "redirect:/shipments";
     }
+
 
 
     @GetMapping("/edit/{id}")
@@ -96,6 +108,7 @@ public class ShipmentController {
         model.addAttribute("shipment", shipmentDTO);
         model.addAttribute("clients", clientService.getAllClients());
         model.addAttribute("shipmentId", id); // used in form action
+        model.addAttribute("offices", officeService.getAllOffices());
         return "edit_shipment";
     }
 

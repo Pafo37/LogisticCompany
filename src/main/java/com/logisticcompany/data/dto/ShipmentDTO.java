@@ -9,4 +9,5 @@ public class ShipmentDTO {
     private String deliveryAddress;
     private double weight;
     private boolean deliveredToOffice;
+    private Long deliveryOfficeId;
 }

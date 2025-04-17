@@ -34,10 +34,7 @@ public class Shipment extends BaseEntity {
     private Client receiver;
 
     @ManyToOne
-    private Office sourceOffice;
-
-    @ManyToOne
-    private Office destinationOffice;
+    private Office deliveryOffice;
 
     @ManyToOne
     private Employee registeredBy;
