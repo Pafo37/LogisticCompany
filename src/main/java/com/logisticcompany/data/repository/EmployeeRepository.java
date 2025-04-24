@@ -15,6 +15,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findByNameContaining(String name);
 
-    Employee findByUser(User user);
+    Optional<Employee> findByUser(User user);
 
 }

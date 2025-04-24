@@ -1,13 +1,17 @@
 package com.logisticcompany.service.shipment;
 
+import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.service.client.ClientService;
+import com.logisticcompany.service.employee.EmployeeService;
+import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,6 +22,10 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final ShipmentRepository shipmentRepository;
 
     private final ClientService clientService;
+
+    private final OfficeService officeService;
+
+    private final EmployeeService employeeService;
 
     @Override
     public List<Shipment> getAllShipments() {
@@ -57,5 +65,48 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .map(shipment -> BigDecimal.valueOf(shipment.getPrice()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Shipment createShipmentFromDTO(ShipmentDTO dto, Principal principal) {
+        Shipment shipment = new Shipment();
+        mapDTOToShipment(dto, shipment, principal);
+        return shipmentRepository.save(shipment);
+    }
+
+    public Shipment updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal) {
+        Shipment shipment = getShipmentById(id);
+        mapDTOToShipment(dto, shipment, principal);
+        return shipmentRepository.save(shipment);
+    }
+
+    private void mapDTOToShipment(ShipmentDTO dto, Shipment shipment, Principal principal) {
+        shipment.setWeight(dto.getWeight());
+        shipment.setDeliveredToOffice(dto.isDeliveredToOffice());
+        shipment.setDeliveryAddress(dto.getDeliveryAddress());
+
+        shipment.setSender(clientService.getClientById(dto.getSenderId()));
+        shipment.setReceiver(clientService.getClientById(dto.getReceiverId()));
+
+        if (dto.isDeliveredToOffice() && dto.getDeliveryOfficeId() != null) {
+            shipment.setDeliveryOffice(officeService.getOfficeById(dto.getDeliveryOfficeId()));
+        } else {
+            shipment.setDeliveryOffice(null);
+        }
+
+        shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
+        shipment.setRegisteredBy(employeeService.getByUser(principal.getName()));
+    }
+
+    public double calculatePrice(double weight, boolean deliveredToOffice) {
+        double basePrice = 5.0;
+        double weightFactor = weight * 0.5;
+
+        if (deliveredToOffice) {
+            return basePrice + weightFactor;
+        } else {
+            return (basePrice + weightFactor) * 1.5; // More expensive if delivered to home
+        }
+    }
+
+
 
 }

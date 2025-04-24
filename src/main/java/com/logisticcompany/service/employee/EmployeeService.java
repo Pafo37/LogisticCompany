@@ -20,4 +20,7 @@ public interface EmployeeService {
     List<Employee> searchEmployeesByName(String name);
 
     Employee findByUser(User user);
+
+    Employee getByUser(String username);
+
 }

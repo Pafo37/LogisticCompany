@@ -3,6 +3,7 @@ package com.logisticcompany.service.employee;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.EmployeeRepository;
+import com.logisticcompany.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -46,6 +49,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findByUser(User user) {
-        return employeeRepository.findByUser(user);
+        return employeeRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + user.getUsername()));
+    }
+
+    @Override
+    public Employee getByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        return employeeRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
     }
 }
