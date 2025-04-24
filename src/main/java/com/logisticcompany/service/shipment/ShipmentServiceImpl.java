@@ -3,7 +3,9 @@ package com.logisticcompany.service.shipment;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
+import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ShipmentRepository;
+import com.logisticcompany.data.repository.UserRepository;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
@@ -26,6 +28,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final OfficeService officeService;
 
     private final EmployeeService employeeService;
+
+    private final UserRepository userRepository;
 
     @Override
     public List<Shipment> getAllShipments() {
@@ -66,15 +70,27 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public Shipment createShipmentFromDTO(ShipmentDTO dto, Principal principal) {
+    @Override
+    public List<Shipment> getShipmentsForClient(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        Client client = clientService.getByUser(user);
+
+        return shipmentRepository.findBySenderOrReceiver(client, client);
+    }
+
+    @Override
+    public Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal) {
         Shipment shipment = new Shipment();
-        mapDTOToShipment(dto, shipment, principal);
+        mapDTOToShipment(shipmentDTO, shipment, principal);
         return shipmentRepository.save(shipment);
     }
 
-    public Shipment updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal) {
+    @Override
+    public Shipment updateShipmentFromDTO(Long id, ShipmentDTO shipmentDTO, Principal principal) {
         Shipment shipment = getShipmentById(id);
-        mapDTOToShipment(dto, shipment, principal);
+        mapDTOToShipment(shipmentDTO, shipment, principal);
         return shipmentRepository.save(shipment);
     }
 
@@ -106,7 +122,5 @@ public class ShipmentServiceImpl implements ShipmentService {
             return (basePrice + weightFactor) * 1.5; // More expensive if delivered to home
         }
     }
-
-
 
 }

@@ -46,4 +46,9 @@ public class ShipmentRestController {
     public void deleteShipment(@PathVariable Long id) {
         shipmentService.deleteShipment(id);
     }
+
+    @GetMapping("/client")
+    public List<Shipment> getShipmentsForLoggedInClient(Principal principal) {
+        return shipmentService.getShipmentsForClient(principal.getName());
+    }
 }

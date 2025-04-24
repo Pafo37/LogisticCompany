@@ -1,9 +1,11 @@
 package com.logisticcompany.service.shipment;
 
+import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,4 +25,9 @@ public interface ShipmentService {
 
     BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate);
 
+    List<Shipment> getShipmentsForClient(String username);
+
+    Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal);
+
+    Shipment updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal);
 }
