@@ -1,9 +1,9 @@
 package com.logisticcompany.controller;
 
 import com.logisticcompany.data.dto.ShipmentDTO;
-import com.logisticcompany.data.entity.*;
+import com.logisticcompany.data.entity.Client;
+import com.logisticcompany.data.entity.User;
 import com.logisticcompany.service.client.ClientService;
-import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.shipment.ShipmentService;
 import com.logisticcompany.service.user.UserService;
@@ -26,8 +26,6 @@ public class ShipmentController {
     private OfficeService officeService;
 
     private UserService userService;
-
-    private EmployeeService employeeService;
 
     @GetMapping
     public String getAllShipments(Model model, Principal principal) {
@@ -67,54 +65,17 @@ public class ShipmentController {
             return "add_shipment";
         }
 
-        Shipment shipment = new Shipment();
-        shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
-        shipment.setWeight(shipmentDTO.getWeight());
-        shipment.setDeliveredToOffice(shipmentDTO.isDeliveredToOffice());
-
-        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
-        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
-        shipment.setSender(sender);
-        shipment.setReceiver(receiver);
-
-        // Fetch Office only if deliveredToOffice = true
-        if (shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() != null) {
-            Office office = officeService.getOfficeById(shipmentDTO.getDeliveryOfficeId());
-            shipment.setDeliveryOffice(office);
-        }
-
-        // Price calculation (if you have it)
-        double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
-        shipment.setPrice(price);
-
-        shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
-        shipmentService.saveShipment(shipment);
+        shipmentService.saveShipment(shipmentDTO, principal);
         return "redirect:/shipments";
     }
 
 
-    //TODO:Add some mapper
     @GetMapping("/edit/{id}")
     public String showEditShipmentForm(@PathVariable Long id, Model model) {
-        Shipment shipment = shipmentService.getShipmentById(id);
-
-        ShipmentDTO shipmentDTO = new ShipmentDTO();
-        shipmentDTO.setId(shipment.getId());
-        shipmentDTO.setSenderId(shipment.getSender().getId());
-        shipmentDTO.setReceiverId(shipment.getReceiver().getId());
-        shipmentDTO.setDeliveryAddress(shipment.getDeliveryAddress());
-        shipmentDTO.setWeight(shipment.getWeight());
-        shipmentDTO.setDeliveredToOffice(shipment.isDeliveredToOffice());
-
-        // ✅ Set deliveryOfficeId if shipment is delivered to office
-        if (shipment.getDeliveryOffice() != null) {
-            shipmentDTO.setDeliveryOfficeId(shipment.getDeliveryOffice().getId());
-        }
-
-        model.addAttribute("shipment", shipmentDTO);
+        model.addAttribute("shipment", shipmentService.getShipmentById(id));
         model.addAttribute("clients", clientService.getAllClients());
-        model.addAttribute("shipmentId", id); // used in form action
         model.addAttribute("offices", officeService.getAllOffices());
+        model.addAttribute("shipmentId", id);
         return "edit_shipment";
     }
 
@@ -122,37 +83,14 @@ public class ShipmentController {
     public String editShipment(@PathVariable Long id, @ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
         if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
                 || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
-
             model.addAttribute("errorMessage", "You must either select a delivery office or provide a delivery address.");
             model.addAttribute("clients", clientService.getAllClients());
             model.addAttribute("offices", officeService.getAllOffices());
+            model.addAttribute("shipmentId", id);
             return "edit_shipment";
         }
 
-        Shipment shipment = shipmentService.getShipmentById(id);
-        shipment.setDeliveryAddress(shipmentDTO.getDeliveryAddress());
-        shipment.setWeight(shipmentDTO.getWeight());
-        shipment.setDeliveredToOffice(shipmentDTO.isDeliveredToOffice());
-
-        Client sender = clientService.getClientById(shipmentDTO.getSenderId());
-        Client receiver = clientService.getClientById(shipmentDTO.getReceiverId());
-        shipment.setSender(sender);
-        shipment.setReceiver(receiver);
-
-        if (shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() != null) {
-            Office office = officeService.getOfficeById(shipmentDTO.getDeliveryOfficeId());
-            shipment.setDeliveryOffice(office);
-        } else {
-            shipment.setDeliveryOffice(null); // Clear it if not delivering to office
-        }
-
-        double price = calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice());
-        shipment.setPrice(price);
-
-        shipment.setRegisteredBy(getEmployeeFromPrincipal(principal));
-
-        shipmentService.saveShipment(shipment);
-
+        shipmentService.updateShipmentFromDTO(id, shipmentDTO, principal);
         return "redirect:/shipments";
     }
 
@@ -161,18 +99,6 @@ public class ShipmentController {
     public String deleteShipment(@PathVariable Long id) {
         shipmentService.deleteShipment(id);
         return "redirect:/shipments";
-    }
-
-    private double calculatePrice(double weight, boolean deliveredToOffice) {
-        double baseRatePerKg = 0.5;
-        double deliveryFee = deliveredToOffice ? 0.0 : 5.0;
-        return (weight * baseRatePerKg) + deliveryFee;
-    }
-
-    private Employee getEmployeeFromPrincipal(Principal principal) {
-        String username = principal.getName();
-        User user = userService.findByUsername(username);
-        return employeeService.findEntityByUser(user);
     }
 
 }

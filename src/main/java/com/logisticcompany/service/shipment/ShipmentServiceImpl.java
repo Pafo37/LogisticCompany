@@ -32,18 +32,26 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final UserRepository userRepository;
 
     @Override
-    public List<Shipment> getAllShipments() {
-        return shipmentRepository.findAll();
+    public List<ShipmentDTO> getAllShipments() {
+        return shipmentRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public Shipment getShipmentById(long id) {
-        return shipmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid shipment id" + id));
+    public ShipmentDTO getShipmentById(long id) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
+        return mapToDTO(shipment);
     }
 
     @Override
-    public void saveShipment(Shipment shipment) {
-        shipmentRepository.save(shipment);
+    public ShipmentDTO saveShipment(ShipmentDTO shipmentDTO, Principal principal) {
+        Shipment shipment = new Shipment();
+        mapDTOToShipment(shipmentDTO, shipment, principal);
+        Shipment saved = shipmentRepository.save(shipment);
+        return mapToDTO(saved);
     }
 
     @Override
@@ -52,19 +60,25 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public List<Shipment> getShipmentsByClient(Client client) {
-        return shipmentRepository.findBySenderOrReceiver(client, client);
+    public List<ShipmentDTO> getShipmentsByClient(Client client) {
+        return shipmentRepository.findBySenderOrReceiver(client, client)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public List<Shipment> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate) {
+    public List<ShipmentDTO> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate) {
         return shipmentRepository.findAllByCreatedAtBetween(
-                startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+                        startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay())
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
     public BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
-        List<Shipment> shipments = findShipmentsBetweenDates(startDate, endDate);
+        List<Shipment> shipments = findShipmentEntitiesBetweenDates(startDate, endDate);
         return shipments.stream()
                 .map(shipment -> BigDecimal.valueOf(shipment.getPrice()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -88,11 +102,13 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public Shipment updateShipmentFromDTO(Long id, ShipmentDTO shipmentDTO, Principal principal) {
-        Shipment shipment = getShipmentById(id);
+    public ShipmentDTO updateShipmentFromDTO(Long id, ShipmentDTO shipmentDTO, Principal principal) {
+        Shipment shipment = findShipmentEntityById(id);
         mapDTOToShipment(shipmentDTO, shipment, principal);
-        return shipmentRepository.save(shipment);
+        Shipment updated = shipmentRepository.save(shipment);
+        return mapToDTO(updated);
     }
+
 
     private void mapDTOToShipment(ShipmentDTO dto, Shipment shipment, Principal principal) {
         shipment.setWeight(dto.getWeight());
@@ -110,6 +126,31 @@ public class ShipmentServiceImpl implements ShipmentService {
 
         shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
         shipment.setRegisteredBy(employeeService.findEntityByUsername(principal.getName()));
+    }
+
+    private ShipmentDTO mapToDTO(Shipment shipment) {
+        ShipmentDTO dto = new ShipmentDTO();
+        dto.setId(shipment.getId());
+        dto.setSenderId(shipment.getSender().getId());
+        dto.setReceiverId(shipment.getReceiver().getId());
+        dto.setDeliveryAddress(shipment.getDeliveryAddress());
+        dto.setWeight(shipment.getWeight());
+        dto.setDeliveredToOffice(shipment.isDeliveredToOffice());
+        if (shipment.getDeliveryOffice() != null) {
+            dto.setDeliveryOfficeId(shipment.getDeliveryOffice().getId());
+        }
+        return dto;
+    }
+
+    private List<Shipment> findShipmentEntitiesBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return shipmentRepository.findAllByCreatedAtBetween(
+                startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()
+        );
+    }
+
+    private Shipment findShipmentEntityById(Long id) {
+        return shipmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
     }
 
     public double calculatePrice(double weight, boolean deliveredToOffice) {

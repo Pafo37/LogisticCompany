@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface ShipmentService {
 
-    List<Shipment> getAllShipments();
+    List<ShipmentDTO> getAllShipments();
 
-    Shipment getShipmentById(long id);
+    ShipmentDTO getShipmentById(long id);
 
-    void saveShipment(Shipment shipment);
+    ShipmentDTO saveShipment(ShipmentDTO shipment,Principal principal);
 
     void deleteShipment(Long id);
 
-    List<Shipment> getShipmentsByClient(Client client);
+    List<ShipmentDTO> getShipmentsByClient(Client client);
 
-    List<Shipment> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate);
+    List<ShipmentDTO> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate);
 
     BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate);
 
@@ -29,5 +29,5 @@ public interface ShipmentService {
 
     Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal);
 
-    Shipment updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal);
+    ShipmentDTO updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal);
 }

@@ -2,9 +2,6 @@ package com.logisticcompany.api;
 
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Shipment;
-import com.logisticcompany.service.client.ClientService;
-import com.logisticcompany.service.employee.EmployeeService;
-import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.shipment.ShipmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +15,14 @@ import java.util.List;
 public class ShipmentRestController {
 
     private final ShipmentService shipmentService;
-    private final ClientService clientService;
-    private final OfficeService officeService;
-    private final EmployeeService employeeService;
 
     @GetMapping
-    public List<Shipment> getAllShipments() {
+    public List<ShipmentDTO> getAllShipments() {
         return shipmentService.getAllShipments();
     }
 
     @GetMapping("/{id}")
-    public Shipment getShipmentById(@PathVariable Long id) {
+    public ShipmentDTO getShipmentById(@PathVariable Long id) {
         return shipmentService.getShipmentById(id);
     }
 
@@ -38,7 +32,7 @@ public class ShipmentRestController {
     }
 
     @PutMapping("/{id}")
-    public Shipment updateShipment(@PathVariable Long id, @RequestBody ShipmentDTO dto, Principal principal) {
+    public ShipmentDTO updateShipment(@PathVariable Long id, @RequestBody ShipmentDTO dto, Principal principal) {
         return shipmentService.updateShipmentFromDTO(id, dto, principal);
     }
 
