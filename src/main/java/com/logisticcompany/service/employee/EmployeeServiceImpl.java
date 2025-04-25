@@ -1,5 +1,6 @@
 package com.logisticcompany.service.employee;
 
+import com.logisticcompany.data.dto.EmployeeDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.EmployeeRepository;
@@ -18,18 +19,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final UserRepository userRepository;
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployeesDTOs() {
+        return employeeRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public Employee getEmployeeById(long id) {
-        return employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid employee id" + id));
+    public EmployeeDTO getEmployeeById(long id) {
+        return mapToDTO(employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found")));
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+        Employee employeeEntity = mapToEntity(employeeDTO);
+        Employee saved = employeeRepository.save(employeeEntity);
+        return mapToDTO(saved);
     }
 
     @Override
@@ -38,27 +45,58 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findEmployeesByRole(String role) {
-        return employeeRepository.findByRole(role);
+    public EmployeeDTO findByUser(User user) {
+        Employee employee = employeeRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + user.getUsername()));
+        return mapToDTO(employee);
     }
 
     @Override
-    public List<Employee> searchEmployeesByName(String name) {
-        return employeeRepository.findByNameContaining(name);
-    }
-
-    @Override
-    public Employee findByUser(User user) {
+    public Employee findEntityByUser(User user) {
         return employeeRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + user.getUsername()));
     }
 
     @Override
-    public Employee getByUser(String username) {
+    public Employee findEntityByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 
         return employeeRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
+    }
+
+
+
+    @Override
+    public EmployeeDTO getByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        Employee employee = employeeRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
+
+        return mapToDTO(employee);
+    }
+
+
+    //TODO: Extract to a mapper class
+    private EmployeeDTO mapToDTO(Employee employee) {
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(employee.getId());
+        dto.setName(employee.getName());
+        dto.setRole(employee.getRole());
+        dto.setEmail(employee.getEmail());
+        dto.setPhone(employee.getPhone());
+        return dto;
+    }
+
+    private Employee mapToEntity(EmployeeDTO dto) {
+        Employee employee = new Employee();
+        employee.setName(dto.getName());
+        employee.setRole(dto.getRole());
+        employee.setEmail(dto.getEmail());
+        employee.setPhone(dto.getPhone());
+        return employee;
     }
 }

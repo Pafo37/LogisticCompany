@@ -170,9 +170,9 @@ public class ShipmentController {
     }
 
     private Employee getEmployeeFromPrincipal(Principal principal) {
-        String username = principal.getName(); // comes from Spring Security
+        String username = principal.getName();
         User user = userService.findByUsername(username);
-        return employeeService.findByUser(user);
+        return employeeService.findEntityByUser(user);
     }
 
 }

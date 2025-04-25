@@ -1,5 +1,6 @@
 package com.logisticcompany.api;
 
+import com.logisticcompany.data.dto.EmployeeDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.service.employee.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -15,28 +16,23 @@ public class EmployeeRestController {
     private final EmployeeService employeeService;
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeService.getAllEmployeesDTOs();
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
+    public EmployeeDTO getEmployeeById(@PathVariable Long id) {
         return employeeService.getEmployeeById(id);
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employee) {
         return employeeService.saveEmployee(employee);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee updated) {
-        Employee existing = employeeService.getEmployeeById(id);
-        existing.setName(updated.getName());
-        existing.setEmail(updated.getEmail());
-        existing.setPhone(updated.getPhone());
-        existing.setRole(updated.getRole());
-        return employeeService.saveEmployee(existing);
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO updated) {
+        return employeeService.saveEmployee(updated);
     }
 
     @DeleteMapping("/{id}")

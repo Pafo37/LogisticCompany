@@ -109,7 +109,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
 
         shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
-        shipment.setRegisteredBy(employeeService.getByUser(principal.getName()));
+        shipment.setRegisteredBy(employeeService.findEntityByUsername(principal.getName()));
     }
 
     public double calculatePrice(double weight, boolean deliveredToOffice) {

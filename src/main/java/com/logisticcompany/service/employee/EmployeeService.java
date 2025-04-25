@@ -1,5 +1,6 @@
 package com.logisticcompany.service.employee;
 
+import com.logisticcompany.data.dto.EmployeeDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 
@@ -7,20 +8,21 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    List<Employee> getAllEmployees();
+    List<EmployeeDTO> getAllEmployeesDTOs();
 
-    Employee getEmployeeById(long id);
+    EmployeeDTO getEmployeeById(long id);
 
-    Employee saveEmployee(Employee employee);
+    EmployeeDTO saveEmployee(EmployeeDTO employee);
 
     void deleteEmployee(Long id);
 
-    List<Employee> findEmployeesByRole(String role);
+    EmployeeDTO findByUser(User user);
 
-    List<Employee> searchEmployeesByName(String name);
+    EmployeeDTO getByUser(String username);
 
-    Employee findByUser(User user);
+    Employee findEntityByUser(User user);
 
-    Employee getByUser(String username);
+    Employee findEntityByUsername(String username);
+
 
 }

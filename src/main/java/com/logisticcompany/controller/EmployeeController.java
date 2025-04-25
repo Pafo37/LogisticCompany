@@ -1,5 +1,6 @@
 package com.logisticcompany.controller;
 
+import com.logisticcompany.data.dto.EmployeeDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.service.employee.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class EmployeeController {
 
     @GetMapping
     public String getAllEmployees(Model model) {
-        model.addAttribute("employees", employeeService.getAllEmployees());
+        model.addAttribute("employees", employeeService.getAllEmployeesDTOs());
         return "employees";
     }
 
@@ -29,7 +30,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/add")
-    public String addEmployee(@ModelAttribute Employee employee) {
+    public String addEmployee(@ModelAttribute EmployeeDTO employee) {
         employeeService.saveEmployee(employee);
         return "redirect:/employees";
     }
@@ -41,7 +42,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editEmployee(@PathVariable Long id, @ModelAttribute Employee employee) {
+    public String editEmployee(@PathVariable Long id, @ModelAttribute EmployeeDTO employee) {
         employee.setId(id);
         employeeService.saveEmployee(employee);
         return "redirect:/employees";
