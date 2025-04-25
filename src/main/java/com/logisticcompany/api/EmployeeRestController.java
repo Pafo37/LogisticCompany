@@ -1,7 +1,6 @@
 package com.logisticcompany.api;
 
 import com.logisticcompany.data.dto.EmployeeDTO;
-import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.service.employee.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

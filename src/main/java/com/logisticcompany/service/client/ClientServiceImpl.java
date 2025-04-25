@@ -3,17 +3,18 @@ package com.logisticcompany.service.client;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
+import com.logisticcompany.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<Client> getAllClients() {
@@ -36,23 +37,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> searchClientsByName(String name) {
-        return clientRepository.findByNameContaining(name);
-    }
-
-    @Override
-    public Optional<Client> findClientByEmail(String email) {
-        return clientRepository.findByEmail(email);
-    }
-
-    @Override
-    public List<Client> findClientsByPhone(String phone) {
-        return clientRepository.findByPhone(phone);
-    }
-
-    @Override
     public Client getByUser(User user) {
         return clientRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Client not found for user: " + user.getUsername()));
+    }
+
+    @Override
+    public Client getByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        return clientRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
     }
 }
