@@ -1,21 +1,17 @@
 package com.logisticcompany.service.office;
 
-import com.logisticcompany.data.entity.Office;
+import com.logisticcompany.data.dto.OfficeDTO;
 
 import java.util.List;
 
 public interface OfficeService {
 
-    List<Office> getAllOffices();
+    List<OfficeDTO> getAllOffices();
 
-    Office getOfficeById(Long id);
+    OfficeDTO getOfficeById(Long id);
 
-    Office saveOffice(Office office);
+    OfficeDTO saveOffice(OfficeDTO office);
 
     void deleteOffice(Long id);
-
-    List<Office> searchOfficesByName(String name);
-
-    List<Office> searchOfficesByAddress(String address);
 
 }

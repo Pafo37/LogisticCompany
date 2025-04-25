@@ -1,5 +1,6 @@
 package com.logisticcompany.api;
 
+import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.data.entity.Office;
 import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
@@ -15,23 +16,23 @@ public class OfficeRestController {
     private final OfficeService officeService;
 
     @GetMapping
-    public List<Office> getAllOffices() {
+    public List<OfficeDTO> getAllOffices() {
         return officeService.getAllOffices();
     }
 
     @GetMapping("/{id}")
-    public Office getOfficeById(@PathVariable Long id) {
+    public OfficeDTO getOfficeById(@PathVariable Long id) {
         return officeService.getOfficeById(id);
     }
 
     @PostMapping
-    public Office createOffice(@RequestBody Office office) {
+    public OfficeDTO createOffice(@RequestBody OfficeDTO office) {
         return officeService.saveOffice(office);
     }
 
     @PutMapping("/{id}")
-    public Office updateOffice(@PathVariable Long id, @RequestBody Office updatedOffice) {
-        Office existing = officeService.getOfficeById(id);
+    public OfficeDTO updateOffice(@PathVariable Long id, @RequestBody Office updatedOffice) {
+        OfficeDTO existing = officeService.getOfficeById(id);
         existing.setName(updatedOffice.getName());
         existing.setAddress(updatedOffice.getAddress());
         return officeService.saveOffice(existing);

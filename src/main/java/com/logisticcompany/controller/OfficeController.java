@@ -1,6 +1,6 @@
 package com.logisticcompany.controller;
 
-import com.logisticcompany.data.entity.Office;
+import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,12 +22,12 @@ public class OfficeController {
 
     @GetMapping("/add")
     public String showAddOfficeForm(Model model) {
-        model.addAttribute("office", new Office());
+        model.addAttribute("office", new OfficeDTO());
         return "add_office";
     }
 
     @PostMapping("/add")
-    public String addOffice(@ModelAttribute Office office) {
+    public String addOffice(@ModelAttribute OfficeDTO office) {
         officeService.saveOffice(office);
         return "redirect:/offices";
     }
@@ -39,7 +39,7 @@ public class OfficeController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editOffice(@PathVariable Long id, @ModelAttribute Office office) {
+    public String editOffice(@PathVariable Long id, @ModelAttribute OfficeDTO office) {
         office.setId(id);
         officeService.saveOffice(office);
         return "redirect:/offices";

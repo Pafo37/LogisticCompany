@@ -4,6 +4,7 @@ import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
+import com.logisticcompany.data.repository.OfficeRepository;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.data.repository.UserRepository;
 import com.logisticcompany.service.client.ClientService;
@@ -30,6 +31,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final EmployeeService employeeService;
 
     private final UserRepository userRepository;
+
+    private final OfficeRepository officeRepository;
 
     @Override
     public List<ShipmentDTO> getAllShipments() {
@@ -119,7 +122,8 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setReceiver(clientService.getClientById(dto.getReceiverId()));
 
         if (dto.isDeliveredToOffice() && dto.getDeliveryOfficeId() != null) {
-            shipment.setDeliveryOffice(officeService.getOfficeById(dto.getDeliveryOfficeId()));
+            shipment.setDeliveryOffice(officeRepository.findById(dto.getDeliveryOfficeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Office not found")));
         } else {
             shipment.setDeliveryOffice(null);
         }
