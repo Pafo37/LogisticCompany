@@ -23,13 +23,13 @@
     <tbody>
     <tr th:each="shipment : ${shipments}">
         <td th:text="${shipment.id}"></td>
-        <td th:text="${shipment.sender?.name}"></td>
-        <td th:text="${shipment.receiver?.name}"></td>
+        <td th:text="${shipment.senderName}">Sender Name</td>
+        <td th:text="${shipment.receiverName}">Receiver Name</td>
         <td th:text="${shipment.deliveryAddress}"></td>
         <td th:text="${shipment.weight}"></td>
         <td th:text="${shipment.price}"></td>
         <td th:text="${shipment.deliveredToOffice ? 'Yes' : 'No'}"></td>
-        <td th:text="${shipment.registeredBy?.name}"></td>
+        <td th:text="${shipment.registeredByName}">Registered By</td>
         <td>
             <a th:href="@{/shipments/edit/{id}(id=${shipment.id})}">Edit</a> |
             <a th:href="@{/shipments/delete/{id}(id=${shipment.id})}">Delete</a>

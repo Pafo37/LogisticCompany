@@ -136,13 +136,22 @@ public class ShipmentServiceImpl implements ShipmentService {
         ShipmentDTO dto = new ShipmentDTO();
         dto.setId(shipment.getId());
         dto.setSenderId(shipment.getSender().getId());
+        dto.setSenderName(shipment.getSender().getName());
         dto.setReceiverId(shipment.getReceiver().getId());
+        dto.setReceiverName(shipment.getReceiver().getName());
         dto.setDeliveryAddress(shipment.getDeliveryAddress());
         dto.setWeight(shipment.getWeight());
         dto.setDeliveredToOffice(shipment.isDeliveredToOffice());
+        dto.setPrice(shipment.getPrice());
+
         if (shipment.getDeliveryOffice() != null) {
             dto.setDeliveryOfficeId(shipment.getDeliveryOffice().getId());
         }
+
+        if (shipment.getRegisteredBy() != null) {
+            dto.setRegisteredByName(shipment.getRegisteredBy().getName());
+        }
+
         return dto;
     }
 
