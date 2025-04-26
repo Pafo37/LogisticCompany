@@ -7,6 +7,7 @@ import com.logisticcompany.data.repository.EmployeeRepository;
 import com.logisticcompany.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
         Employee employeeEntity = mapToEntity(employeeDTO);
         Employee saved = employeeRepository.save(employeeEntity);
@@ -40,21 +42,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for id: " + id));
+
+        employee.setName(employeeDTO.getName());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setPhone(employeeDTO.getPhone());
+        employee.setRole(employeeDTO.getRole());
+
+        Employee updated = employeeRepository.save(employee);
+        return mapToDTO(updated);
+    }
+
+    @Override
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
-    }
-
-    @Override
-    public EmployeeDTO findByUser(User user) {
-        Employee employee = employeeRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + user.getUsername()));
-        return mapToDTO(employee);
-    }
-
-    @Override
-    public Employee findEntityByUser(User user) {
-        return employeeRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + user.getUsername()));
     }
 
     @Override
@@ -65,20 +68,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
     }
-
-
-
-    @Override
-    public EmployeeDTO getByUser(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
-
-        Employee employee = employeeRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
-
-        return mapToDTO(employee);
-    }
-
 
     //TODO: Extract to a mapper class
     private EmployeeDTO mapToDTO(Employee employee) {

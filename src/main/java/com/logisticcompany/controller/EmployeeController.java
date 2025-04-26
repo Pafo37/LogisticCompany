@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("/employees")
@@ -43,8 +41,7 @@ public class EmployeeController {
 
     @PostMapping("/edit/{id}")
     public String editEmployee(@PathVariable Long id, @ModelAttribute EmployeeDTO employee) {
-        employee.setId(id);
-        employeeService.saveEmployee(employee);
+        employeeService.updateEmployee(id, employee);
         return "redirect:/employees";
     }
 

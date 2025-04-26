@@ -14,15 +14,10 @@ public interface EmployeeService {
 
     EmployeeDTO saveEmployee(EmployeeDTO employee);
 
+    EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO);
+
     void deleteEmployee(Long id);
 
-    EmployeeDTO findByUser(User user);
-
-    EmployeeDTO getByUser(String username);
-
-    Employee findEntityByUser(User user);
-
     Employee findEntityByUsername(String username);
-
 
 }
