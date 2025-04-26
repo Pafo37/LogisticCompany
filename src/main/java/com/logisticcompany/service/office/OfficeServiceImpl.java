@@ -37,6 +37,18 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
+    public OfficeDTO updateOffice(Long id, OfficeDTO officeDTO) {
+        Office office = officeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Office not found for id: " + id));
+
+        office.setName(officeDTO.getName());
+        office.setAddress(officeDTO.getAddress());
+
+        Office updated = officeRepository.save(office);
+        return mapToDTO(updated);
+    }
+
+    @Override
     public void deleteOffice(Long id) {
         officeRepository.deleteById(id);
     }

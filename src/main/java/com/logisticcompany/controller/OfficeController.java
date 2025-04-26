@@ -39,9 +39,8 @@ public class OfficeController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editOffice(@PathVariable Long id, @ModelAttribute OfficeDTO office) {
-        office.setId(id);
-        officeService.saveOffice(office);
+    public String editOffice(@PathVariable Long id, @ModelAttribute("office") OfficeDTO officeDTO) {
+        officeService.updateOffice(id, officeDTO);
         return "redirect:/offices";
     }
 

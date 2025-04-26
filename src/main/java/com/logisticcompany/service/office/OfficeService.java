@@ -12,6 +12,8 @@ public interface OfficeService {
 
     OfficeDTO saveOffice(OfficeDTO office);
 
+    OfficeDTO updateOffice(Long id, OfficeDTO officeDTO);
+
     void deleteOffice(Long id);
 
 }
