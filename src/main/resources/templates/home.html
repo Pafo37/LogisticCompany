@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home Page</title>
 </head>
 <body>
+
+<h1>Welcome to Logistic Company System</h1>
+
+<ul>
+    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+        <a th:href="@{/shipments}">Manage Shipments</a>
+    </li>
+    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+        <a th:href="@{/clients}">Manage Clients</a>
+    </li>
+    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+        <a th:href="@{/offices}">Manage Offices</a>
+    </li>
+    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+        <a th:href="@{/employees}">Manage Employees</a>
+    </li>
+    <li th:if="${#authorization.expression('hasAuthority(''ROLE_CLIENT'')')}">
+        <a th:href="@{/api/shipments/clients}">View My Shipments</a>
+    </li>
+</ul>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
 
 </body>
 </html>
