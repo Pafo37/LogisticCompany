@@ -18,4 +18,7 @@ public interface ClientService {
     Client getByUser(User user);
 
     Client getByUsername(String username);
+
+    Client findEntityByUsername(String username);
+
 }

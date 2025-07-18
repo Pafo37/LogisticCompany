@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
 
 @Controller
 @AllArgsConstructor
@@ -46,10 +48,19 @@ public class ShipmentController {
     }
 
     @GetMapping("/add")
-    public String showAddShipmentForm(Model model) {
+    public String showAddShipmentForm(Model model, Principal principal) {
+        Client currentClient = clientService.findEntityByUsername(principal.getName());
+
+        List<Client> allClients = clientService.getAllClients();
+        List<Client> filteredClients = allClients.stream()
+                .filter(client -> !Objects.equals(client.getId(), currentClient.getId()))
+                .toList();
+
         model.addAttribute("shipment", new ShipmentDTO());
-        model.addAttribute("clients", clientService.getAllClients());
+        model.addAttribute("clients", filteredClients);
         model.addAttribute("offices", officeService.getAllOffices());
+        model.addAttribute("currentClient", currentClient);
+
         return "add_shipment";
     }
 

@@ -50,4 +50,12 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
     }
+
+    @Override
+    public Client findEntityByUsername(String username) {
+        return clientRepository.findByUserUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
+    }
+
+
 }

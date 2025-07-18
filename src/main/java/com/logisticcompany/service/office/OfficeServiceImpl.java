@@ -53,6 +53,13 @@ public class OfficeServiceImpl implements OfficeService {
         officeRepository.deleteById(id);
     }
 
+
+    @Override
+    public Office findEntityById(Long id) {
+        return officeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Office not found for ID: " + id));
+    }
+
     private OfficeDTO mapToDTO(Office office) {
         OfficeDTO dto = new OfficeDTO();
         dto.setId(office.getId());

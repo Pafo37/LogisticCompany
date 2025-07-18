@@ -11,6 +11,8 @@ import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -117,19 +119,26 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setWeight(dto.getWeight());
         shipment.setDeliveredToOffice(dto.isDeliveredToOffice());
         shipment.setDeliveryAddress(dto.getDeliveryAddress());
-
-        shipment.setSender(clientService.getClientById(dto.getSenderId()));
         shipment.setReceiver(clientService.getClientById(dto.getReceiverId()));
 
         if (dto.isDeliveredToOffice() && dto.getDeliveryOfficeId() != null) {
-            shipment.setDeliveryOffice(officeRepository.findById(dto.getDeliveryOfficeId())
-                    .orElseThrow(() -> new IllegalArgumentException("Office not found")));
+            shipment.setDeliveryOffice(officeService.findEntityById(dto.getDeliveryOfficeId()));
         } else {
             shipment.setDeliveryOffice(null);
         }
 
-        shipment.setPrice(calculatePrice(shipment.getWeight(), shipment.isDeliveredToOffice()));
-        shipment.setRegisteredBy(employeeService.findEntityByUsername(principal.getName()));
+        shipment.setPrice(calculatePrice(dto.getWeight(), dto.isDeliveredToOffice()));
+
+        // Sender is always the logged-in client
+        shipment.setSender(clientService.findEntityByUsername(principal.getName()));
+    }
+
+    private boolean userHasRole(String role) {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(auth -> auth.equals(role));
     }
 
     private ShipmentDTO mapToDTO(Shipment shipment) {

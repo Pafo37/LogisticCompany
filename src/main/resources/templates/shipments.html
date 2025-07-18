@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Shipments</title>
 </head>
@@ -38,7 +39,10 @@
     </tbody>
 </table>
 
-<a th:href="@{/shipments/add}">Add New Shipment</a>
+<!-- Show only for ROLE_CLIENT -->
+<div sec:authorize="hasAuthority('ROLE_CLIENT')">
+    <a th:href="@{/shipments/add}">Add New Shipment</a>
+</div>
 
 <div style="margin-top: 15px;">
     <a th:href="@{/home}">Back to Home</a>

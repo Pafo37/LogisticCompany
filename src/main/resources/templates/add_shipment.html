@@ -12,15 +12,11 @@
 </div>
 
 <form th:action="@{/shipments/add}" th:object="${shipment}" method="post">
+
     <div>
         <label>Sender:</label>
-        <select th:field="*{senderId}" required>
-            <option value="">-- Select Sender --</option>
-            <option th:each="client : ${clients}"
-                    th:value="${client.id}"
-                    th:text="${client.name}">
-            </option>
-        </select>
+        <span th:text="${currentClient.name}">Client Name</span>
+        <input type="hidden" th:field="*{senderId}" th:value="${currentClient.id}" />
     </div>
 
     <div>
@@ -69,6 +65,5 @@
 <div style="margin-top: 15px;">
     <a th:href="@{/shipments}">Back to Shipments</a>
 </div>
-
 </body>
 </html>
