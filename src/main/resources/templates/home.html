@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Home Page</title>
 </head>
@@ -8,19 +9,19 @@
 <h1>Welcome to Logistic Company System</h1>
 
 <ul>
-    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+    <li sec:authorize="hasRole('EMPLOYEE')">
         <a th:href="@{/shipments}">Manage Shipments</a>
     </li>
-    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+    <li sec:authorize="hasRole('EMPLOYEE')">
         <a th:href="@{/clients}">Manage Clients</a>
     </li>
-    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+    <li sec:authorize="hasRole('EMPLOYEE')">
         <a th:href="@{/offices}">Manage Offices</a>
     </li>
-    <li th:if="${#authorization.expression('hasAuthority(''ROLE_EMPLOYEE'')')}">
+    <li sec:authorize="hasRole('EMPLOYEE')">
         <a th:href="@{/employees}">Manage Employees</a>
     </li>
-    <li th:if="${#authorization.expression('hasAuthority(''ROLE_CLIENT'')')}">
+    <li sec:authorize="hasRole('CLIENT')">
         <a th:href="@{/shipments}">View My Shipments</a>
     </li>
 </ul>
