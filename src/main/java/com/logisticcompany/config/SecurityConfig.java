@@ -32,13 +32,12 @@ import java.util.stream.Collectors;
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtDecoder jwtDecoder;
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -97,7 +96,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/register/**").permitAll()
                         .requestMatchers("/clients/**", "/revenue/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/shipments/**").hasRole("CLIENT")
+                        .requestMatchers("/shipments/**").hasAnyRole("CLIENT", "EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -114,7 +113,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
-                );;
+                );
 
         return http.build();
     }

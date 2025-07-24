@@ -18,13 +18,12 @@ public class KeycloakAuthorityConverter implements Converter<Jwt, Collection<Gra
 
         Map<String, Object> realm = (Map<String, Object>) source.getClaims().get("realm_access");
         if (realm == null || realm.isEmpty()) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
 
-        Collection<GrantedAuthority> authorities = ((List<String>) realm.get("roles"))
+        return ((List<String>) realm.get("roles"))
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        return authorities;
     }
 }
