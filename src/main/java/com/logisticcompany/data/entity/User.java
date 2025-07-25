@@ -37,6 +37,9 @@ public class User implements UserDetails {
     )
     private Set<Role> authorities;
 
+    @Column(name = "keycloak_id", unique = true)
+    private String keycloakId;
+
     @OneToOne(mappedBy = "user")
     private Client client;
 

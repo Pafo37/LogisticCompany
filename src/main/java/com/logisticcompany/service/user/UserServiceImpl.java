@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setRole(dto.getRole());
+        user.setKeycloakId(dto.getKeycloakUserId());
         return userRepository.save(user);
     }
 

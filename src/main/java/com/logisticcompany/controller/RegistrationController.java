@@ -1,11 +1,9 @@
 package com.logisticcompany.controller;
 
 import com.logisticcompany.data.dto.RegistrationDTO;
-import com.logisticcompany.data.entity.User;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.keycloak.KeyCloakService;
-import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @AllArgsConstructor
 public class RegistrationController {
 
-    private UserService userService;
     private KeyCloakService keyCloakService;
     private ClientService clientService;
     private EmployeeService employeeService;
@@ -29,24 +26,28 @@ public class RegistrationController {
         return "register";
     }
 
-
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("registrationDTO") RegistrationDTO dto, Model model) {
+    public String register(@ModelAttribute RegistrationDTO dto, Model model) {
         try {
-            // Register the user in Keycloak
-            keyCloakService.registerUserInKeycloak(dto);
+            String keycloakUserId = keyCloakService.registerUser(
+                    dto.getUsername(),
+                    dto.getPassword(),
+                    dto.getEmail(),
+                    dto.getFirstName(),
+                    dto.getLastName(),
+                    dto.getRole()
+            );
+            dto.setKeycloakUserId(keycloakUserId);
 
-            // Sync user locally (e.g., as Client or Employee)
-            if ("ROLE_CLIENT".equalsIgnoreCase(dto.getRole())) {
+            if ("ROLE_CLIENT".equals(dto.getRole())) {
                 clientService.createClientFromRegistration(dto);
-            } else if ("ROLE_EMPLOYEE".equalsIgnoreCase(dto.getRole())) {
+            } else if ("ROLE_EMPLOYEE".equals(dto.getRole())) {
                 employeeService.createEmployeeFromRegistration(dto);
             }
 
-            return "redirect:/login";
+            return "redirect:/oauth2/authorization/keycloak";
 
         } catch (Exception e) {
-            model.addAttribute("registrationDTO", dto);
             model.addAttribute("errorMessage", "Registration failed: " + e.getMessage());
             return "register";
         }
