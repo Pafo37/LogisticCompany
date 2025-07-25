@@ -8,6 +8,8 @@ import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.shipment.ShipmentService;
 import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,21 +32,27 @@ public class ShipmentController {
     private UserService userService;
 
     @GetMapping
-    public String getAllShipments(Model model, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+    public String getAllShipments(Model model, OAuth2AuthenticationToken authentication) {
+        String username = authentication.getPrincipal().getAttribute("preferred_username");
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
-        //TODO: you need to get the role
-        boolean isEmployee = false;
+        User user = userService.findByUsername(username);
 
-        if (isEmployee) {
+        if (roles.contains("ROLE_EMPLOYEE")) {
             model.addAttribute("shipments", shipmentService.getAllShipments());
-        } else {
+        } else if (roles.contains("ROLE_CLIENT")) {
             Client client = clientService.getByUser(user);
             model.addAttribute("shipments", shipmentService.getShipmentsByClient(client));
+        } else {
+            model.addAttribute("error", "Access denied");
+            return "error";
         }
 
         return "shipments";
     }
+
 
     @GetMapping("/add")
     public String showAddShipmentForm(Model model, Principal principal) {
