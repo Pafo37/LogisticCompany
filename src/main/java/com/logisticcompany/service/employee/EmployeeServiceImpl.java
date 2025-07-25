@@ -6,6 +6,7 @@ import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.EmployeeRepository;
 import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     private final UserRepository userRepository;
+
+    private final UserService userService;
 
     @Override
     public List<EmployeeDTO> getAllEmployeesDTOs() {
@@ -71,13 +74,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public void createEmployeeFromRegistration(RegistrationDTO dto) {
+        var user = userService.createUser(dto);
         Employee employee = new Employee();
         employee.setName(dto.getFirstName() + " " + dto.getLastName());
         employee.setEmail(dto.getEmail());
-
-        User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setEnabled(true);
         employee.setUser(user);
 
         employeeRepository.save(employee);
