@@ -33,9 +33,8 @@ public class ShipmentController {
     public String getAllShipments(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName());
 
-        boolean isEmployee = user.getAuthorities()
-                .stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"));
+        //TODO: you need to get the role
+        boolean isEmployee = false;
 
         if (isEmployee) {
             model.addAttribute("shipments", shipmentService.getAllShipments());
