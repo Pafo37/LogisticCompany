@@ -1,9 +1,11 @@
 package com.logisticcompany.service.client;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
 import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
     private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     public List<Client> getAllClients() {
@@ -57,5 +60,16 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
     }
 
+    @Override
+    public void createClientFromRegistration(RegistrationDTO dto) {
+        var user = userService.createUser(dto);
+        Client client = new Client();
+        client.setUser(user);
+        client.setName(dto.getFirstName() + " " + dto.getLastName());
+        client.setEmail(dto.getEmail());
+        client.setPhone(dto.getPhone());
+        client.setAddress(dto.getAddress());
+        clientRepository.save(client);
+    }
 
 }

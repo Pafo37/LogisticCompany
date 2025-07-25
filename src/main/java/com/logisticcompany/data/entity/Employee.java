@@ -24,7 +24,5 @@ public class Employee extends BaseEntity {
     private String email;
     private String phone;
 
-   /* @ManyToOne //TODO:check wtf is that
-    private Company company;*/
 
 }

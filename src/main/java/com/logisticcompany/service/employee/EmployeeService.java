@@ -1,6 +1,7 @@
 package com.logisticcompany.service.employee;
 
 import com.logisticcompany.data.dto.EmployeeDTO;
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 
@@ -19,5 +20,7 @@ public interface EmployeeService {
     void deleteEmployee(Long id);
 
     Employee findEntityByUsername(String username);
+
+    void createEmployeeFromRegistration(RegistrationDTO dto);
 
 }

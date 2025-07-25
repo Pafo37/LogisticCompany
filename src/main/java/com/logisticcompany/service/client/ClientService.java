@@ -1,5 +1,6 @@
 package com.logisticcompany.service.client;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 
@@ -20,5 +21,7 @@ public interface ClientService {
     Client getByUsername(String username);
 
     Client findEntityByUsername(String username);
+
+    void createClientFromRegistration(RegistrationDTO dto);
 
 }

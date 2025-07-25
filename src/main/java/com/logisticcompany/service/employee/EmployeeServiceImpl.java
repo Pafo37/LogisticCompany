@@ -1,6 +1,7 @@
 package com.logisticcompany.service.employee;
 
 import com.logisticcompany.data.dto.EmployeeDTO;
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.EmployeeRepository;
@@ -67,6 +68,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found for user: " + username));
+    }
+
+    public void createEmployeeFromRegistration(RegistrationDTO dto) {
+        Employee employee = new Employee();
+        employee.setName(dto.getFirstName() + " " + dto.getLastName());
+        employee.setEmail(dto.getEmail());
+
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setEnabled(true);
+        employee.setUser(user);
+
+        employeeRepository.save(employee);
     }
 
     //TODO: Extract to a mapper class
