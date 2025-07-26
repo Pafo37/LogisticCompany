@@ -4,7 +4,6 @@ import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
-import com.logisticcompany.data.repository.UserRepository;
 import com.logisticcompany.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
-    private UserRepository userRepository;
     private UserService userService;
 
     @Override
@@ -46,18 +44,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
-
-        return clientRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
-    }
-
-    @Override
-    public Client findEntityByUsername(String username) {
-        return clientRepository.findByUserUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found for user: " + username));
+    public Client findClientById(String id) {
+        return clientRepository.findByUser_KeycloakId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found for user id: " + id));
     }
 
     @Override

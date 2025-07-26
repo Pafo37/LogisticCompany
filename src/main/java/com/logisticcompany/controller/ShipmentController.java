@@ -56,7 +56,7 @@ public class ShipmentController {
 
     @GetMapping("/add")
     public String showAddShipmentForm(Model model, Principal principal) {
-        Client currentClient = clientService.findEntityByUsername(principal.getName());
+        Client currentClient = clientService.findClientById(principal.getName());
 
         List<Client> allClients = clientService.getAllClients();
         List<Client> filteredClients = allClients.stream()

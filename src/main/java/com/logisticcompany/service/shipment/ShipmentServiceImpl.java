@@ -130,7 +130,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setPrice(calculatePrice(dto.getWeight(), dto.isDeliveredToOffice()));
 
         // Sender is always the logged-in client
-        shipment.setSender(clientService.findEntityByUsername(principal.getName()));
+        shipment.setSender(clientService.findClientById(principal.getName()));
     }
 
     private boolean userHasRole(String role) {

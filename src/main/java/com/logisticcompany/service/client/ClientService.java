@@ -18,9 +18,7 @@ public interface ClientService {
 
     Client getByUser(User user);
 
-    Client getByUsername(String username);
-
-    Client findEntityByUsername(String username);
+    Client findClientById(String id);
 
     void createClientFromRegistration(RegistrationDTO dto);
 
