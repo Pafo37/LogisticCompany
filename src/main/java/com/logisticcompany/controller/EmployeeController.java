@@ -1,7 +1,6 @@
 package com.logisticcompany.controller;
 
 import com.logisticcompany.data.dto.EmployeeDTO;
-import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.service.employee.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,12 +18,6 @@ public class EmployeeController {
     public String getAllEmployees(Model model) {
         model.addAttribute("employees", employeeService.getAllEmployeesDTOs());
         return "employees";
-    }
-
-    @GetMapping("/add")
-    public String showAddEmployeeForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "add_employee";
     }
 
     @PostMapping("/add")
