@@ -1,11 +1,7 @@
 package com.logisticcompany.service.user;
 
 import com.logisticcompany.data.dto.RegistrationDTO;
-import com.logisticcompany.data.entity.Client;
-import com.logisticcompany.data.entity.Employee;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.ClientRepository;
-import com.logisticcompany.data.repository.EmployeeRepository;
 import com.logisticcompany.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
