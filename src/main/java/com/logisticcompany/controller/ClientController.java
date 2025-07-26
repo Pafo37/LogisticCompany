@@ -20,12 +20,6 @@ public class ClientController {
         return "clients";
     }
 
-    @GetMapping("/add")
-    public String showAddClientForm(Model model) {
-        model.addAttribute("client", new Client());
-        return "add_client";
-    }
-
     @PostMapping("/add")
     public String addClient(@ModelAttribute Client client) {
         clientService.saveClient(client);
