@@ -74,6 +74,7 @@ public class ShipmentController {
     @PostMapping("/add")
     public String addShipment(@ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
 
+        //TODO: remove checkbox and check if office is not selected, bad UX
         if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
                 || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
 
