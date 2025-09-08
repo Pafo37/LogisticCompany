@@ -17,7 +17,6 @@ public class User {
     private long id;
 
     private String username;
-    private String password;
     private String role;
 
     @Column(name = "keycloak_id", unique = true)
@@ -28,5 +27,11 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Employee employee;
+
+    @OneToOne(mappedBy = "user")
+    private Courier courier;
+
+    @OneToOne(mappedBy = "user")
+    private OfficeEmployee officeEmployee;
 
 }

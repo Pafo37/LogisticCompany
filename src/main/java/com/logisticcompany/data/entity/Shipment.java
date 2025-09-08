@@ -1,9 +1,6 @@
 package com.logisticcompany.data.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +14,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "shipment")
 public class Shipment extends BaseEntity {
+
+    public enum Status {
+        PENDING_ASSIGNMENT,
+        ASSIGNED,
+        DELIVERED
+    }
 
     private String deliveryAddress;
     private double weight;
@@ -33,11 +36,19 @@ public class Shipment extends BaseEntity {
     @JoinColumn(name = "receiver_id")
     private Client receiver;
 
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING_ASSIGNMENT;
+
     @ManyToOne
     private Office deliveryOffice;
 
     @ManyToOne
-    private Employee registeredBy;
+    @JoinColumn(name = "registered_by_id")
+    private OfficeEmployee registeredBy;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_courier_id")
+    private Courier assignedCourier;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -4,6 +4,7 @@ import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
+import com.logisticcompany.data.repository.OfficeEmployeeRepository;
 import com.logisticcompany.data.repository.OfficeRepository;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.data.repository.UserRepository;
@@ -36,6 +37,8 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     private final OfficeRepository officeRepository;
 
+    private final OfficeEmployeeRepository officeEmployeeRepository;
+
     @Override
     public List<ShipmentDTO> getAllShipments() {
         return shipmentRepository.findAll()
@@ -55,6 +58,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     public ShipmentDTO saveShipment(ShipmentDTO shipmentDTO, Principal principal) {
         Shipment shipment = new Shipment();
         mapDTOToShipment(shipmentDTO, shipment, principal);
+        shipment.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
         Shipment saved = shipmentRepository.save(shipment);
         return mapToDTO(saved);
     }
@@ -158,7 +162,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
 
         if (shipment.getRegisteredBy() != null) {
-            dto.setRegisteredByName(shipment.getRegisteredBy().getName());
+            dto.setRegisteredByName(shipment.getRegisteredBy().getUser().getUsername());
         }
 
         return dto;

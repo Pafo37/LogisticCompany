@@ -1,0 +1,24 @@
+package com.logisticcompany.service.officeemployee;
+
+import com.logisticcompany.data.entity.OfficeEmployee;
+import com.logisticcompany.data.entity.User;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface OfficeEmployeeService {
+
+    OfficeEmployee getById(Long id);
+
+    List<OfficeEmployee> getAll();
+
+    Optional<OfficeEmployee> findByUserKeycloakId(String keycloakId);
+
+    OfficeEmployee getByUserKeycloakId(String keycloakId);
+
+    OfficeEmployee createForUser(User user);
+
+    OfficeEmployee createForUserKeycloakId(String keycloakId);
+
+    void deleteById(Long id);
+}
