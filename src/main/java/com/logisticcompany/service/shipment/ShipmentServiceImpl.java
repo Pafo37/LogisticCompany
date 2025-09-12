@@ -12,8 +12,6 @@ import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -120,29 +118,26 @@ public class ShipmentServiceImpl implements ShipmentService {
 
 
     private void mapDTOToShipment(ShipmentDTO dto, Shipment shipment, Principal principal) {
+        shipment.setDeliveryAddress(null);
+        shipment.setDeliveryOffice(null);
+
         shipment.setWeight(dto.getWeight());
-        shipment.setDeliveredToOffice(dto.isDeliveredToOffice());
         shipment.setDeliveryAddress(dto.getDeliveryAddress());
         shipment.setReceiver(clientService.getClientById(dto.getReceiverId()));
 
-        if (dto.isDeliveredToOffice() && dto.getDeliveryOfficeId() != null) {
+        if (dto.getDeliveryOfficeId() != null) {
             shipment.setDeliveryOffice(officeService.findEntityById(dto.getDeliveryOfficeId()));
+        } else if (dto.getDeliveryAddress() != null && !dto.getDeliveryAddress().isBlank()) {
+            shipment.setDeliveryAddress(dto.getDeliveryAddress().trim());
         } else {
-            shipment.setDeliveryOffice(null);
+            throw new IllegalArgumentException("Must provide either a delivery office or a delivery address.");
         }
 
-        shipment.setPrice(calculatePrice(dto.getWeight(), dto.isDeliveredToOffice()));
+        boolean deliveredToOffice = dto.getDeliveryOfficeId() != null;
+        shipment.setPrice(calculatePrice(dto.getWeight(), deliveredToOffice));
 
         // Sender is always the logged-in client
         shipment.setSender(clientService.findClientById(principal.getName()));
-    }
-
-    private boolean userHasRole(String role) {
-        return SecurityContextHolder.getContext().getAuthentication()
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(auth -> auth.equals(role));
     }
 
     private ShipmentDTO mapToDTO(Shipment shipment) {
@@ -154,7 +149,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         dto.setReceiverName(shipment.getReceiver().getName());
         dto.setDeliveryAddress(shipment.getDeliveryAddress());
         dto.setWeight(shipment.getWeight());
-        dto.setDeliveredToOffice(shipment.isDeliveredToOffice());
         dto.setPrice(shipment.getPrice());
 
         if (shipment.getDeliveryOffice() != null) {

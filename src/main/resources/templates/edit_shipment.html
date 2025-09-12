@@ -38,11 +38,6 @@
     </div>
 
     <div>
-        <label>Delivery Address (if NOT delivered to office):</label>
-        <input type="text" th:field="*{deliveryAddress}" placeholder="Enter address here">
-    </div>
-
-    <div>
         <label>Delivery Office (if Delivered to Office):</label>
         <select th:field="*{deliveryOfficeId}">
             <option value="">-- Select Office --</option>
@@ -55,8 +50,8 @@
     </div>
 
     <div>
-        <label>Delivered to Office:</label>
-        <input type="checkbox" th:field="*{deliveredToOffice}">
+        <label>Delivery Address (if NOT delivered to office):</label>
+        <input type="text" th:field="*{deliveryAddress}" placeholder="Enter address here">
     </div>
 
     <div>

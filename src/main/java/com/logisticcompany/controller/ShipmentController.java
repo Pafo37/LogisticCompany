@@ -72,15 +72,25 @@ public class ShipmentController {
     }
 
     @PostMapping("/add")
-    public String addShipment(@ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
+    public String addShipment(@ModelAttribute("shipment") ShipmentDTO shipmentDTO,
+                              Principal principal,
+                              Model model) {
 
-        //TODO: remove checkbox and check if office is not selected, bad UX
-        if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
-                || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
+        boolean missingOfficeAndAddress =
+                (shipmentDTO.getDeliveryOfficeId() == null) &&
+                        (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank());
+
+        if (missingOfficeAndAddress) {
+            Client currentClient = clientService.findClientById(principal.getName());
+            List<Client> filteredClients = clientService.getAllClients().stream()
+                    .filter(c -> !Objects.equals(c.getId(), currentClient.getId()))
+                    .toList();
 
             model.addAttribute("errorMessage", "You must either select a delivery office or provide a delivery address.");
+            model.addAttribute("shipment", shipmentDTO);
+            model.addAttribute("currentClient", currentClient);
+            model.addAttribute("clients", filteredClients);
             model.addAttribute("offices", officeService.getAllOffices());
-            model.addAttribute("clients", clientService.getAllClients());
             return "add_shipment";
         }
 
@@ -99,11 +109,23 @@ public class ShipmentController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editShipment(@PathVariable Long id, @ModelAttribute("shipment") ShipmentDTO shipmentDTO, Principal principal, Model model) {
-        if ((shipmentDTO.isDeliveredToOffice() && shipmentDTO.getDeliveryOfficeId() == null)
-                || (!shipmentDTO.isDeliveredToOffice() && (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank()))) {
+    public String editShipment(@PathVariable Long id,
+                               @ModelAttribute("shipment") ShipmentDTO shipmentDTO,
+                               Principal principal,
+                               Model model) {
+
+        boolean missingOfficeAndAddress =
+                (shipmentDTO.getDeliveryOfficeId() == null) &&
+                        (shipmentDTO.getDeliveryAddress() == null || shipmentDTO.getDeliveryAddress().isBlank());
+
+        if (missingOfficeAndAddress) {
+            List<Client> filteredClients = clientService.getAllClients().stream()
+                    .filter(c -> !Objects.equals(c.getId(), shipmentDTO.getSenderId()))
+                    .toList();
+
             model.addAttribute("errorMessage", "You must either select a delivery office or provide a delivery address.");
-            model.addAttribute("clients", clientService.getAllClients());
+            model.addAttribute("shipment", shipmentDTO);
+            model.addAttribute("clients", filteredClients);
             model.addAttribute("offices", officeService.getAllOffices());
             model.addAttribute("shipmentId", id);
             return "edit_shipment";
@@ -112,7 +134,6 @@ public class ShipmentController {
         shipmentService.updateShipmentFromDTO(id, shipmentDTO, principal);
         return "redirect:/shipments";
     }
-
 
     @GetMapping("/delete/{id}")
     public String deleteShipment(@PathVariable Long id) {

@@ -24,7 +24,6 @@ public class Shipment extends BaseEntity {
     private String deliveryAddress;
     private double weight;
     private double price;
-    private boolean deliveredToOffice;
 
     private LocalDateTime sentDate;
 

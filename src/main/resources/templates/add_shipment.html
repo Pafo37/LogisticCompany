@@ -13,10 +13,14 @@
 
 <form th:action="@{/shipments/add}" th:object="${shipment}" method="post">
 
-    <div>
+    <!-- Sender (requires currentClient in Model) -->
+    <div th:if="${currentClient != null}">
         <label>Sender:</label>
         <span th:text="${currentClient.name}">Client Name</span>
-        <input type="hidden" th:field="*{senderId}" th:value="${currentClient.id}" />
+        <input type="hidden" th:field="*{senderId}" th:value="${currentClient.id}"/>
+    </div>
+    <div th:if="${currentClient == null}" style="color:#a00;">
+        <em>Sender could not be resolved.</em>
     </div>
 
     <div>
@@ -31,11 +35,6 @@
     </div>
 
     <div>
-        <label>Delivery Address (if NOT delivered to office):</label>
-        <input type="text" th:field="*{deliveryAddress}" placeholder="Enter address here">
-    </div>
-
-    <div>
         <label>Delivery Office (if Delivered to Office):</label>
         <select th:field="*{deliveryOfficeId}">
             <option value="">-- Select Office --</option>
@@ -47,8 +46,8 @@
     </div>
 
     <div>
-        <label>Delivered to Office:</label>
-        <input type="checkbox" th:field="*{deliveredToOffice}">
+        <label>Delivery Address (if NOT delivered to office):</label>
+        <input type="text" th:field="*{deliveryAddress}" placeholder="Enter address here">
     </div>
 
     <div>

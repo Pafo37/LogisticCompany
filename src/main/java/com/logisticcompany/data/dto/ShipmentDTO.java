@@ -11,7 +11,6 @@ public class ShipmentDTO {
     private String receiverName;
     private String deliveryAddress;
     private double weight;
-    private boolean deliveredToOffice;
     private Double price;
     private String registeredByName;
     private Long deliveryOfficeId;
