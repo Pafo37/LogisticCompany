@@ -21,7 +21,6 @@ public class Courier extends BaseEntity {
     private String firstName;
     private String lastName;
     private String email;
-    private String phone;
 
     @OneToMany(mappedBy = "assignedCourier")
     private List<Shipment> shipments = new ArrayList<>();

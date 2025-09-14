@@ -20,6 +20,5 @@ public class OfficeEmployee extends BaseEntity {
     private String firstName;
     private String lastName;
     private String email;
-    private String phone;
 
 }
