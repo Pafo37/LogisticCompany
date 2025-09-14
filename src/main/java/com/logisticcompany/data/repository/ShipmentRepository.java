@@ -27,4 +27,5 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("SELECT COALESCE(SUM(s.price), 0) FROM Shipment s WHERE s.createdAt BETWEEN :start AND :end")
     BigDecimal sumRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
+    List<Shipment> findAllByAssignedCourier_User_KeycloakId(String keycloakId);
 }

@@ -118,7 +118,6 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public void assignCourier(Long shipmentId, Long courierId, Principal principal) {
-        String officeEmployeeSub = principal.getName();
         Shipment shipment = shipmentRepository.findById(shipmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
         Courier courier = courierRepository.findById(courierId)
@@ -127,6 +126,14 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setAssignedCourier(courier);
         shipment.setStatus(Shipment.Status.ASSIGNED);
         shipmentRepository.save(shipment);
+    }
+
+    @Override
+    public List<ShipmentDTO> getShipmentsForCourier(Principal principal) {
+        String sub = principal.getName();
+        return shipmentRepository.findAllByAssignedCourier_User_KeycloakId(sub).stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override

@@ -33,5 +33,7 @@ public interface ShipmentService {
 
     void assignCourier(Long shipmentId, Long courierId, Principal principal);
 
+    List<ShipmentDTO> getShipmentsForCourier(Principal principal);
+
     void markDelivered(Long shipmentId, Principal principal);
 }
