@@ -26,9 +26,6 @@ public class User {
     private Client client;
 
     @OneToOne(mappedBy = "user")
-    private Employee employee;
-
-    @OneToOne(mappedBy = "user")
     private Courier courier;
 
     @OneToOne(mappedBy = "user")
