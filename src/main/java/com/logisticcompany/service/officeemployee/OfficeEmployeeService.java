@@ -21,6 +21,8 @@ public interface OfficeEmployeeService {
 
     OfficeEmployee createFromRegistration(RegistrationDTO dto, User user);
 
+    OfficeEmployee getByUser(User user);
+
     OfficeEmployee createForUserKeycloakId(String keycloakId);
 
     void deleteById(Long id);

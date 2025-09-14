@@ -1,14 +1,13 @@
 package com.logisticcompany.service.shipment;
 
 import com.logisticcompany.data.dto.ShipmentDTO;
-import com.logisticcompany.data.entity.Client;
-import com.logisticcompany.data.entity.Courier;
-import com.logisticcompany.data.entity.Shipment;
-import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.*;
+import com.logisticcompany.data.entity.*;
+import com.logisticcompany.data.repository.CourierRepository;
+import com.logisticcompany.data.repository.ShipmentRepository;
+import com.logisticcompany.data.repository.UserRepository;
 import com.logisticcompany.service.client.ClientService;
-import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
+import com.logisticcompany.service.officeemployee.OfficeEmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,15 +26,11 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     private final OfficeService officeService;
 
-    private final EmployeeService employeeService;
-
     private final UserRepository userRepository;
 
-    private final OfficeRepository officeRepository;
-
-    private final OfficeEmployeeRepository officeEmployeeRepository;
-
     private final CourierRepository courierRepository;
+
+    private final OfficeEmployeeService officeEmployeeService;
 
     @Override
     public List<ShipmentDTO> getAllShipments() {
@@ -118,10 +113,20 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public void assignCourier(Long shipmentId, Long courierId, Principal principal) {
+        String userName = principal.getName();
         Shipment shipment = shipmentRepository.findById(shipmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow(() -> new IllegalArgumentException("Courier not found"));
+
+        User user = userRepository.findByKeycloakId(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for keycloakId: " + userName));
+
+        OfficeEmployee officeEmployee = officeEmployeeService.getByUser(user);
+
+        if (shipment.getRegisteredBy() == null) {
+            shipment.setRegisteredBy(officeEmployee);
+        }
 
         shipment.setAssignedCourier(courier);
         shipment.setStatus(Shipment.Status.ASSIGNED);
@@ -151,7 +156,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setStatus(Shipment.Status.DELIVERED);
         shipmentRepository.save(shipment);
     }
-
 
 
     private void mapDTOToShipment(ShipmentDTO dto, Shipment shipment, Principal principal) {
@@ -198,8 +202,10 @@ public class ShipmentServiceImpl implements ShipmentService {
             dto.setAssignedCourierName(shipment.getAssignedCourier().getUser().getUsername());
         }
 
-        if (shipment.getRegisteredBy() != null) {
+        if (shipment.getRegisteredBy() != null && shipment.getRegisteredBy().getUser() != null) {
             dto.setRegisteredByName(shipment.getRegisteredBy().getUser().getUsername());
+        } else {
+            dto.setRegisteredByName("—");
         }
 
         return dto;

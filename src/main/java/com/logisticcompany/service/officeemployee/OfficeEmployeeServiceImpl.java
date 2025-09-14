@@ -78,4 +78,10 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         }
         officeEmployeeRepository.deleteById(id);
     }
+
+    @Override
+    public OfficeEmployee getByUser(User user) {
+        return officeEmployeeRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Office employee not found for user " + user.getUsername()));
+    }
 }

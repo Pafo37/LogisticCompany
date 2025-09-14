@@ -47,7 +47,7 @@
         <td th:text="${shipment.status}">PENDING_ASSIGNMENT</td>
 
         <td th:text="${shipment.assignedCourierName != null ? shipment.assignedCourierName : '—'}">—</td>
-        <td th:text="${shipment.registeredByName != null ? shipment.registeredByName : '—'}">—</td>
+        <td th:text="${shipment.registeredByName}">Registered By</td>
 
         <td>
             <!-- CLIENT actions -->
