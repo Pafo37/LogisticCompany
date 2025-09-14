@@ -11,8 +11,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -21,8 +20,6 @@
         <td th:text="${client.id}">1</td>
         <td th:text="${client.name}">John Doe</td>
         <td th:text="${client.email}">john@example.com</td>
-        <td th:text="${client.phone}">123-456-7890</td>
-        <td th:text="${client.address}">123 Main St</td>
         <td>
             <a th:href="@{/clients/edit/{id}(id=${client.id})}">Edit</a>
             <a th:href="@{/clients/delete/{id}(id=${client.id})}">Delete</a>
