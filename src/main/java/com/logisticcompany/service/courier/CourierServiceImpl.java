@@ -1,11 +1,13 @@
 package com.logisticcompany.service.courier;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.CourierRepository;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class CourierServiceImpl implements CourierService {
     private final CourierRepository courierRepository;
     private final UserRepository userRepository;
     private final ShipmentRepository shipmentRepository;
+    private final UserService userService;
 
     @Override
     public Courier getById(Long id) {
@@ -54,6 +57,16 @@ public class CourierServiceImpl implements CourierService {
         Courier profile = new Courier();
         profile.setUser(user);
         return courierRepository.save(profile);
+    }
+
+    @Override
+    public Courier createFromRegistration(RegistrationDTO dto, User user) {
+        Courier c = new Courier();
+        c.setUser(user);
+        c.setFirstName(dto.getFirstName());
+        c.setLastName(dto.getLastName());
+        c.setEmail(dto.getEmail());
+        return courierRepository.save(c);
     }
 
     @Override

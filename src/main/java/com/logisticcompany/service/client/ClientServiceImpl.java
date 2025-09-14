@@ -50,14 +50,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createClientFromRegistration(RegistrationDTO dto) {
-        var user = userService.createUser(dto);
+    public void createClientFromRegistration(RegistrationDTO dto, User user) {
         Client client = new Client();
         client.setUser(user);
         client.setName(dto.getFirstName() + " " + dto.getLastName());
         client.setEmail(dto.getEmail());
-        client.setPhone(dto.getPhone());
-        client.setAddress(dto.getAddress());
         clientRepository.save(client);
     }
 

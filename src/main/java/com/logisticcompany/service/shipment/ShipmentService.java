@@ -30,4 +30,8 @@ public interface ShipmentService {
     Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal);
 
     ShipmentDTO updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal);
+
+    void assignCourier(Long shipmentId, Long courierId, Principal principal);
+
+    void markDelivered(Long shipmentId, Principal principal);
 }

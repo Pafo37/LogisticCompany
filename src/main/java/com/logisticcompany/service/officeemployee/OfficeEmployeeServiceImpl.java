@@ -1,5 +1,6 @@
 package com.logisticcompany.service.officeemployee;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.OfficeEmployeeRepository;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,8 +19,6 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     private final OfficeEmployeeRepository officeEmployeeRepository;
 
     private final UserRepository userRepository;
-
-    private static final String ROLE_OFFICE_EMPLOYEE = "ROLE_OFFICE_EMPLOYEE";
 
     @Override
     public OfficeEmployee getById(Long id) {
@@ -54,6 +52,16 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         OfficeEmployee profile = new OfficeEmployee();
         profile.setUser(user);
         return officeEmployeeRepository.save(profile);
+    }
+
+    @Override
+    public OfficeEmployee createFromRegistration(RegistrationDTO dto, User user) {
+        OfficeEmployee oe = new OfficeEmployee();
+        oe.setUser(user);
+        oe.setFirstName(dto.getFirstName());
+        oe.setLastName(dto.getLastName());
+        oe.setEmail(dto.getEmail());
+        return officeEmployeeRepository.save(oe);
     }
 
     @Override

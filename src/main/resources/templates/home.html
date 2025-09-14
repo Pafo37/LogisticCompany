@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8"/>
     <title>Home Page</title>
 </head>
 <body>
@@ -9,24 +10,32 @@
 <h1>Welcome to Logistic Company System</h1>
 
 <ul>
-    <li sec:authorize="hasRole('EMPLOYEE')">
-        <a th:href="@{/shipments}">Manage Shipments</a>
+    <!-- OFFICE EMPLOYEES -->
+    <li sec:authorize="hasRole('OFFICE_EMPLOYEE')">
+        <a th:href="@{/office-employees/shipments}">View All Shipments</a>
     </li>
-    <li sec:authorize="hasRole('EMPLOYEE')">
+    <li sec:authorize="hasRole('OFFICE_EMPLOYEE')">
         <a th:href="@{/clients}">Manage Clients</a>
     </li>
-    <li sec:authorize="hasRole('EMPLOYEE')">
+    <li sec:authorize="hasRole('OFFICE_EMPLOYEE')">
         <a th:href="@{/offices}">Manage Offices</a>
     </li>
-    <li sec:authorize="hasRole('EMPLOYEE')">
-        <a th:href="@{/employees}">Manage Employees</a>
+    <li sec:authorize="hasRole('OFFICE_EMPLOYEE')">
+        <a th:href="@{/revenue}">Revenue Reports</a>
     </li>
+
+    <!-- COURIERS -->
+    <li sec:authorize="hasRole('COURIER')">
+        <a th:href="@{/courier/shipments}">My Assigned Shipments</a>
+    </li>
+
+    <!-- CLIENTS -->
     <li sec:authorize="hasRole('CLIENT')">
-        <a th:href="@{/shipments}">View My Shipments</a>
+        <a th:href="@{/shipments}">My Shipments</a>
     </li>
 </ul>
 
-<form th:action="@{/logout}" method="post">
+<form th:action="@{/logout}" method="post" style="margin-top: 12px;">
     <button type="submit">Logout</button>
 </form>
 

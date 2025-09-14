@@ -18,6 +18,11 @@ public class Courier extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+
     @OneToMany(mappedBy = "assignedCourier")
     private List<Shipment> shipments = new ArrayList<>();
 

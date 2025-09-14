@@ -1,5 +1,6 @@
 package com.logisticcompany.service.officeemployee;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
 
@@ -17,6 +18,8 @@ public interface OfficeEmployeeService {
     OfficeEmployee getByUserKeycloakId(String keycloakId);
 
     OfficeEmployee createForUser(User user);
+
+    OfficeEmployee createFromRegistration(RegistrationDTO dto, User user);
 
     OfficeEmployee createForUserKeycloakId(String keycloakId);
 

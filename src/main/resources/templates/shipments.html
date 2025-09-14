@@ -2,47 +2,94 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8"/>
     <title>Shipments</title>
 </head>
 <body>
-<h1>Shipments List</h1>
+<h1>Shipments</h1>
 
-<table>
+<!-- Optional error message -->
+<div th:if="${errorMessage}" style="color:red; margin-bottom: 10px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<table border="1" cellpadding="6" cellspacing="0">
     <thead>
     <tr>
         <th>ID</th>
         <th>Sender</th>
         <th>Receiver</th>
-        <th>Delivery Address</th>
+        <th>Destination</th>
         <th>Weight</th>
         <th>Price</th>
+        <th>Status</th>
+        <th>Courier</th>
         <th>Registered By</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="shipment : ${shipments}">
-        <td th:text="${shipment.id}"></td>
-        <td th:text="${shipment.senderName}">Sender Name</td>
-        <td th:text="${shipment.receiverName}">Receiver Name</td>
-        <td th:text="${shipment.deliveryAddress}"></td>
-        <td th:text="${shipment.weight}"></td>
-        <td th:text="${shipment.price}"></td>
-        <td th:text="${shipment.registeredByName}">Registered By</td>
+        <td th:text="${shipment.id}">1</td>
+        <td th:text="${shipment.senderName}">Sender</td>
+        <td th:text="${shipment.receiverName}">Receiver</td>
+
+        <!-- Destination: office name if present, else address -->
         <td>
-            <a th:href="@{/shipments/edit/{id}(id=${shipment.id})}">Edit</a> |
-            <a th:href="@{/shipments/delete/{id}(id=${shipment.id})}">Delete</a>
+            <span th:if="${shipment.deliveryOfficeName != null}"
+                  th:text="'Office: ' + ${shipment.deliveryOfficeName}">Office</span>
+            <span th:if="${shipment.deliveryOfficeName == null}"
+                  th:text="${shipment.deliveryAddress}">Address</span>
+        </td>
+
+        <td th:text="${shipment.weight}">0.00</td>
+        <td th:text="${shipment.price}">0.00</td>
+        <td th:text="${shipment.status}">PENDING_ASSIGNMENT</td>
+
+        <td th:text="${shipment.assignedCourierName != null ? shipment.assignedCourierName : '—'}">—</td>
+        <td th:text="${shipment.registeredByName != null ? shipment.registeredByName : '—'}">—</td>
+
+        <td>
+            <!-- CLIENT actions -->
+            <span sec:authorize="hasRole('CLIENT')">
+                <a th:href="@{/shipments/edit/{id}(id=${shipment.id})}">Edit</a> |
+                <a th:href="@{/shipments/delete/{id}(id=${shipment.id})}">Delete</a>
+            </span>
+
+            <!-- OFFICE EMPLOYEE: assign courier when pending -->
+            <span sec:authorize="hasRole('OFFICE_EMPLOYEE')">
+                <form th:if="${shipment.status == 'PENDING_ASSIGNMENT'}"
+                      th:action="@{|/office-employees/shipments/${shipment.id}/assign|}"
+                      method="post">
+                    <select name="courierId" required th:if="${couriers != null}">
+                        <option value="">-- select courier --</option>
+                        <option th:each="courier : ${couriers}"
+                                th:value="${courier.id}"
+                                th:text="${courier.user.username}"></option>
+                    </select>
+                    <button type="submit" th:if="${couriers != null}">Assign</button>
+                </form>
+            </span>
+
+            <!-- COURIER: mark delivered when assigned -->
+            <span sec:authorize="hasRole('COURIER')">
+                <form th:if="${shipment.status == 'ASSIGNED'}"
+                      th:action="@{|/courier/shipments/${shipment.id}/deliver|}"
+                      method="post">
+                    <button type="submit">Mark Delivered</button>
+                </form>
+            </span>
         </td>
     </tr>
     </tbody>
 </table>
 
-<!-- Show only for ROLE_CLIENT -->
-<div sec:authorize="hasAuthority('ROLE_CLIENT')">
+<!-- CLIENT: add new shipment -->
+<div style="margin-top: 12px;" sec:authorize="hasRole('CLIENT')">
     <a th:href="@{/shipments/add}">Add New Shipment</a>
 </div>
 
-<div style="margin-top: 15px;">
+<div style="margin-top: 12px;">
     <a th:href="@{/home}">Back to Home</a>
 </div>
 </body>

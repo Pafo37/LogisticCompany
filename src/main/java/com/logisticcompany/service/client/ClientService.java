@@ -20,6 +20,6 @@ public interface ClientService {
 
     Client findClientById(String id);
 
-    void createClientFromRegistration(RegistrationDTO dto);
+    void createClientFromRegistration(RegistrationDTO dto, User user);
 
 }

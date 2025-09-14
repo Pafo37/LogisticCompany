@@ -1,5 +1,6 @@
 package com.logisticcompany.service.courier;
 
+import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
@@ -18,6 +19,8 @@ public interface CourierService {
     Courier getByUserKeycloakId(String keycloakId);
 
     Courier createForUser(User user);
+
+    Courier createFromRegistration(RegistrationDTO dto, User user);
 
     Courier createForUserKeycloakId(String keycloakId);
 

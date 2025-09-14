@@ -82,8 +82,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/register/**").permitAll()
-                        .requestMatchers("/clients/**", "/revenue/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/shipments/**").hasAnyRole("CLIENT", "EMPLOYEE")
+                        .requestMatchers("/office-employees/**", "/clients/**", "/revenue/**", "/offices/**")
+                        .hasRole("OFFICE_EMPLOYEE")
+                        .requestMatchers("/courier/**").hasRole("COURIER")
+                        .requestMatchers("/shipments/**").hasAnyRole("CLIENT", "OFFICE_EMPLOYEE", "COURIER")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

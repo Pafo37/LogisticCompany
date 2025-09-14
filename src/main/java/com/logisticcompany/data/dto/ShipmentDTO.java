@@ -10,8 +10,11 @@ public class ShipmentDTO {
     private Long receiverId;
     private String receiverName;
     private String deliveryAddress;
+    private String deliveryOfficeName;
+    private String status;
     private double weight;
     private Double price;
     private String registeredByName;
+    private String assignedCourierName;
     private Long deliveryOfficeId;
 }

@@ -2,12 +2,10 @@ package com.logisticcompany.service.shipment;
 
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
+import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.OfficeEmployeeRepository;
-import com.logisticcompany.data.repository.OfficeRepository;
-import com.logisticcompany.data.repository.ShipmentRepository;
-import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.data.repository.*;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.employee.EmployeeService;
 import com.logisticcompany.service.office.OfficeService;
@@ -36,6 +34,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final OfficeRepository officeRepository;
 
     private final OfficeEmployeeRepository officeEmployeeRepository;
+
+    private final CourierRepository courierRepository;
 
     @Override
     public List<ShipmentDTO> getAllShipments() {
@@ -116,6 +116,36 @@ public class ShipmentServiceImpl implements ShipmentService {
         return mapToDTO(updated);
     }
 
+    @Override
+    public void assignCourier(Long shipmentId, Long courierId, Principal principal) {
+        String officeEmployeeSub = principal.getName();
+        Shipment shipment = shipmentRepository.findById(shipmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
+        Courier courier = courierRepository.findById(courierId)
+                .orElseThrow(() -> new IllegalArgumentException("Courier not found"));
+
+        shipment.setAssignedCourier(courier);
+        shipment.setStatus(Shipment.Status.ASSIGNED);
+        shipmentRepository.save(shipment);
+    }
+
+    @Override
+    public void markDelivered(Long shipmentId, Principal principal) {
+        String courierSub = principal.getName();
+        Shipment shipment = shipmentRepository.findById(shipmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
+
+        if (shipment.getAssignedCourier() == null
+                || shipment.getAssignedCourier().getUser() == null
+                || !courierSub.equals(shipment.getAssignedCourier().getUser().getKeycloakId())) {
+            throw new IllegalStateException("You are not assigned to this shipment");
+        }
+
+        shipment.setStatus(Shipment.Status.DELIVERED);
+        shipmentRepository.save(shipment);
+    }
+
+
 
     private void mapDTOToShipment(ShipmentDTO dto, Shipment shipment, Principal principal) {
         shipment.setDeliveryAddress(null);
@@ -150,9 +180,15 @@ public class ShipmentServiceImpl implements ShipmentService {
         dto.setDeliveryAddress(shipment.getDeliveryAddress());
         dto.setWeight(shipment.getWeight());
         dto.setPrice(shipment.getPrice());
+        dto.setStatus(shipment.getStatus().name());
 
         if (shipment.getDeliveryOffice() != null) {
             dto.setDeliveryOfficeId(shipment.getDeliveryOffice().getId());
+            dto.setDeliveryOfficeName(shipment.getDeliveryOffice().getName());
+        }
+
+        if (shipment.getAssignedCourier() != null && shipment.getAssignedCourier().getUser() != null) {
+            dto.setAssignedCourierName(shipment.getAssignedCourier().getUser().getUsername());
         }
 
         if (shipment.getRegisteredBy() != null) {

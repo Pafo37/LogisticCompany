@@ -14,6 +14,7 @@
 </div>
 
 <form th:action="@{/register}" th:object="${registrationDTO}" method="post">
+
     <div>
         <label>Username:</label>
         <input type="text" th:field="*{username}" required />
@@ -44,7 +45,8 @@
         <select th:field="*{role}" required>
             <option value="">-- Select Role --</option>
             <option value="ROLE_CLIENT">Client</option>
-            <option value="ROLE_EMPLOYEE">Employee</option>
+            <option value="ROLE_OFFICE_EMPLOYEE">Office Employee</option>
+            <option value="ROLE_COURIER">Courier</option>
         </select>
     </div>
 
@@ -52,6 +54,10 @@
         <button type="submit">Register</button>
     </div>
 </form>
+
+<div style="margin-top: 15px;">
+    <a th:href="@{/login}">Back to Login</a>
+</div>
 
 </body>
 </html>
