@@ -1,5 +1,6 @@
 package com.logisticcompany.service.officeemployee;
 
+import com.logisticcompany.data.dto.OfficeEmployeeDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
@@ -9,9 +10,9 @@ import java.util.Optional;
 
 public interface OfficeEmployeeService {
 
-    OfficeEmployee getById(Long id);
+    OfficeEmployeeDTO getById(Long id);
 
-    List<OfficeEmployee> getAll();
+    List<OfficeEmployeeDTO> getAll();
 
     Optional<OfficeEmployee> findByUserKeycloakId(String keycloakId);
 

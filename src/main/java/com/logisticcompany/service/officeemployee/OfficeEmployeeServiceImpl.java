@@ -1,5 +1,6 @@
 package com.logisticcompany.service.officeemployee;
 
+import com.logisticcompany.data.dto.OfficeEmployeeDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
@@ -21,14 +22,18 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     private final UserRepository userRepository;
 
     @Override
-    public OfficeEmployee getById(Long id) {
+    public OfficeEmployeeDTO getById(Long id) {
         return officeEmployeeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("OfficeEmployee not found: " + id));
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new RuntimeException("Office employee not found: " + id));
     }
 
     @Override
-    public List<OfficeEmployee> getAll() {
-        return officeEmployeeRepository.findAll();
+    public List<OfficeEmployeeDTO> getAll() {
+        return officeEmployeeRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     public OfficeEmployee createForUser(User user) {
         Optional<OfficeEmployee> existing = officeEmployeeRepository.findByUser(user);
         if (existing.isPresent()) {
-            return existing.get(); // or throw new IllegalStateException("Profile already exists");
+            return existing.get();
         }
         OfficeEmployee profile = new OfficeEmployee();
         profile.setUser(user);
@@ -56,12 +61,11 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
 
     @Override
     public OfficeEmployee createFromRegistration(RegistrationDTO dto, User user) {
-        OfficeEmployee oe = new OfficeEmployee();
-        oe.setUser(user);
-        oe.setFirstName(dto.getFirstName());
-        oe.setLastName(dto.getLastName());
-        oe.setEmail(dto.getEmail());
-        return officeEmployeeRepository.save(oe);
+        OfficeEmployee officeEmployee = new OfficeEmployee();
+        officeEmployee.setUser(user);
+        officeEmployee.setName(dto.getFirstName() + " " + dto.getLastName());
+        officeEmployee.setEmail(dto.getEmail());
+        return officeEmployeeRepository.save(officeEmployee);
     }
 
     @Override
@@ -84,4 +88,18 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         return officeEmployeeRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Office employee not found for user " + user.getUsername()));
     }
+
+    private OfficeEmployeeDTO mapToDTO(OfficeEmployee entity) {
+        OfficeEmployeeDTO dto = new OfficeEmployeeDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setEmail(entity.getEmail());
+
+        if (entity.getUser() != null) {
+            dto.setUsername(entity.getUser().getUsername());
+        }
+
+        return dto;
+    }
+
 }
