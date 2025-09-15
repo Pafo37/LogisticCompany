@@ -74,37 +74,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public List<ShipmentDTO> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate) {
-        return shipmentRepository.findAllByCreatedAtBetween(
-                        startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay())
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
-    }
-
-    @Override
     public BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
         LocalDateTime start = startDate.atStartOfDay();
         LocalDateTime end = endDate.plusDays(1).atStartOfDay();
 
         return shipmentRepository.sumRevenueBetween(start, end);
-    }
-
-    @Override
-    public List<Shipment> getShipmentsForClient(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
-
-        Client client = clientService.getByUser(user);
-
-        return shipmentRepository.findBySenderOrReceiver(client, client);
-    }
-
-    @Override
-    public Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal) {
-        Shipment shipment = new Shipment();
-        mapDTOToShipment(shipmentDTO, shipment, principal);
-        return shipmentRepository.save(shipment);
     }
 
     @Override

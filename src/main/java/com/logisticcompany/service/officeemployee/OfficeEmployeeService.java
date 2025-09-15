@@ -14,17 +14,8 @@ public interface OfficeEmployeeService {
 
     List<OfficeEmployeeDTO> getAll();
 
-    Optional<OfficeEmployee> findByUserKeycloakId(String keycloakId);
-
-    OfficeEmployee getByUserKeycloakId(String keycloakId);
-
-    OfficeEmployee createForUser(User user);
-
     OfficeEmployee createFromRegistration(RegistrationDTO dto, User user);
 
     OfficeEmployee getByUser(User user);
 
-    OfficeEmployee createForUserKeycloakId(String keycloakId);
-
-    void deleteById(Long id);
 }

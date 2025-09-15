@@ -3,11 +3,9 @@ package com.logisticcompany.service.courier;
 import com.logisticcompany.data.dto.CourierDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
-import com.logisticcompany.data.entity.Shipment;
 import com.logisticcompany.data.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CourierService {
 
@@ -15,19 +13,6 @@ public interface CourierService {
 
     List<CourierDTO> getAll();
 
-    Optional<Courier> findByUserKeycloakId(String keycloakId);
-
-    Courier getByUserKeycloakId(String keycloakId);
-
-    Courier createForUser(User user);
-
     Courier createFromRegistration(RegistrationDTO dto, User user);
 
-    Courier createForUserKeycloakId(String keycloakId);
-
-    void deleteById(Long id);
-
-    List<Shipment> getShipments(Courier courier);
-
-    List<Shipment> getShipmentsByUserKeycloakId(String keycloakId);
 }

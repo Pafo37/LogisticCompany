@@ -8,8 +8,6 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,14 +18,6 @@ public class KeyCloakServiceImpl implements KeyCloakService {
 
     private final Keycloak keycloak;
     private final String REALM = "logistics-app";
-
-    @Override
-    public HttpHeaders createAuthHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
-    }
 
     @Override
     public String registerUser(String username, String password, String email, String firstName, String lastName, String roleName) {

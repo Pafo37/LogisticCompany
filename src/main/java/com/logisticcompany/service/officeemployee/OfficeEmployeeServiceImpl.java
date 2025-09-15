@@ -37,50 +37,12 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     }
 
     @Override
-    public Optional<OfficeEmployee> findByUserKeycloakId(String keycloakId) {
-        return officeEmployeeRepository.findByUser_KeycloakId(keycloakId);
-    }
-
-    @Override
-    public OfficeEmployee getByUserKeycloakId(String keycloakId) {
-        return officeEmployeeRepository.findByUser_KeycloakId(keycloakId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "OfficeEmployee profile not found for user sub: " + keycloakId));
-    }
-
-    @Override
-    public OfficeEmployee createForUser(User user) {
-        Optional<OfficeEmployee> existing = officeEmployeeRepository.findByUser(user);
-        if (existing.isPresent()) {
-            return existing.get();
-        }
-        OfficeEmployee profile = new OfficeEmployee();
-        profile.setUser(user);
-        return officeEmployeeRepository.save(profile);
-    }
-
-    @Override
     public OfficeEmployee createFromRegistration(RegistrationDTO dto, User user) {
         OfficeEmployee officeEmployee = new OfficeEmployee();
         officeEmployee.setUser(user);
         officeEmployee.setName(dto.getFirstName() + " " + dto.getLastName());
         officeEmployee.setEmail(dto.getEmail());
         return officeEmployeeRepository.save(officeEmployee);
-    }
-
-    @Override
-    public OfficeEmployee createForUserKeycloakId(String keycloakId) {
-        User user = userRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found by sub: " + keycloakId));
-        return createForUser(user);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        if (!officeEmployeeRepository.existsById(id)) {
-            throw new EntityNotFoundException("OfficeEmployee not found: " + id);
-        }
-        officeEmployeeRepository.deleteById(id);
     }
 
     @Override

@@ -24,13 +24,7 @@ public interface ShipmentService {
 
     List<ShipmentDTO> getShipmentsByClient(Client client);
 
-    List<ShipmentDTO> findShipmentsBetweenDates(LocalDate startDate, LocalDate endDate);
-
     BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate);
-
-    List<Shipment> getShipmentsForClient(String username);
-
-    Shipment createShipmentFromDTO(ShipmentDTO shipmentDTO, Principal principal);
 
     ShipmentDTO updateShipmentFromDTO(Long id, ShipmentDTO dto, Principal principal);
 

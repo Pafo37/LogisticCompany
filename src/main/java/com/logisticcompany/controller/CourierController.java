@@ -21,15 +21,13 @@ public class CourierController {
     @GetMapping("/shipments")
     public String myShipments(Model model, Principal principal) {
         model.addAttribute("shipments", shipmentService.getShipmentsForCourier(principal));
-        // No need to add "couriers" list; Assign form is hidden for couriers in shipments.html
         return "shipments";
     }
 
-    /** Mark shipment as delivered (button posts here from shipments.html) */
     @PostMapping("/shipments/{id}/deliver")
     public String deliver(@PathVariable Long id, Principal principal, Model model) {
         try {
-            shipmentService.markDelivered(id, principal); // status -> DELIVERED
+            shipmentService.markDelivered(id, principal);
             return "redirect:/courier/shipments";
         } catch (Exception ex) {
             model.addAttribute("errorMessage", ex.getMessage());

@@ -7,7 +7,5 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    User createUser(RegistrationDTO dto);
-
     User createFromRegistration(RegistrationDTO dto, String keyCloakUserId);
 }

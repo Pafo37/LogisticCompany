@@ -20,14 +20,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(RegistrationDTO dto) {
-        User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setRole(dto.getRole());
-        return userRepository.save(user);
-    }
-
-    @Override
     public User createFromRegistration(RegistrationDTO dto, String keyCloakUserId) {
         User user = new User();
         user.setUsername(dto.getUsername());
