@@ -81,11 +81,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/register/**").permitAll()
-                        .requestMatchers("/office-employees/**", "/clients/**", "/revenue/**", "/offices/**")
+                        .requestMatchers("/api/shipments/**").hasAnyRole("CLIENT","OFFICE_EMPLOYEE","COURIER")
+                        .requestMatchers("/api/clients/**", "/api/offices/**", "/api/revenue/**",
+                                "/api/office-employees/**", "/api/couriers/**")
                         .hasRole("OFFICE_EMPLOYEE")
-                        .requestMatchers("/courier/**").hasRole("COURIER")
-                        .requestMatchers("/shipments/**").hasAnyRole("CLIENT", "OFFICE_EMPLOYEE", "COURIER")
+                        .requestMatchers("/api/shipments/assigned", "/courier/**").hasRole("COURIER")
+                        .requestMatchers("/api/shipments/mine").hasRole("CLIENT")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

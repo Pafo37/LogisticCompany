@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/revenue")
+@RequestMapping("/revenue")
 @AllArgsConstructor
 public class RevenueController {
 

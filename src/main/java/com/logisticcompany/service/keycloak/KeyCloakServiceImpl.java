@@ -3,6 +3,8 @@ package com.logisticcompany.service.keycloak;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -66,5 +68,38 @@ public class KeyCloakServiceImpl implements KeyCloakService {
                 .add(Collections.singletonList(role));
 
         return userId;
+    }
+
+    @Override
+    public void updateUser(String keycloakUserId, String email, String name, String username) {
+        if (keycloakUserId == null || keycloakUserId.isBlank()) {
+            throw new IllegalArgumentException("keycloakUserId is required");
+        }
+
+        UsersResource users = keycloak.realm(REALM).users();
+        UserResource userResource = users.get(keycloakUserId);
+        UserRepresentation userResourceRepresentation = userResource.toRepresentation();
+        if (userResourceRepresentation == null) {
+            throw new IllegalArgumentException("Keycloak user not found: " + keycloakUserId);
+        }
+
+        if (username != null && !username.isBlank()) {
+            userResourceRepresentation.setUsername(username.trim().toLowerCase());
+        }
+        if (email != null) {
+            userResourceRepresentation.setEmail(email.trim());
+        }
+        //Limitation, name is now combined from first and last name and keycloak sdk uses first and last name
+        if (name != null) userResourceRepresentation.setFirstName(name.trim());
+
+        userResource.update(userResourceRepresentation);
+    }
+
+    @Override
+    public void deleteUser(String keycloakUserId) {
+        if (keycloakUserId == null || keycloakUserId.isBlank()) {
+            return; // nothing to do
+        }
+        keycloak.realm(REALM).users().get(keycloakUserId).remove();
     }
 }

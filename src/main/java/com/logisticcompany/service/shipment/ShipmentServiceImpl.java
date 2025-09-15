@@ -1,10 +1,9 @@
 package com.logisticcompany.service.shipment;
 
+import com.logisticcompany.data.dto.ShipmentCreateDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.*;
-import com.logisticcompany.data.repository.CourierRepository;
-import com.logisticcompany.data.repository.ShipmentRepository;
-import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.data.repository.*;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.officeemployee.OfficeEmployeeService;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,6 +31,10 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final CourierRepository courierRepository;
 
     private final OfficeEmployeeService officeEmployeeService;
+
+    private final ClientRepository clientRepository;
+
+    private final OfficeRepository officeRepository;
 
     @Override
     public List<ShipmentDTO> getAllShipments() {
@@ -139,6 +143,50 @@ public class ShipmentServiceImpl implements ShipmentService {
         return shipmentRepository.findAllByAssignedCourier_User_KeycloakId(sub).stream()
                 .map(this::mapToDTO)
                 .toList();
+    }
+
+    @Override
+    public List<ShipmentDTO> getShipmentsForCurrentClient(Principal principal) {
+        String sub = principal.getName();
+        var client = clientService.getByUserKeycloakId(sub);
+        return shipmentRepository.findBySenderOrReceiver(client, client).stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    @Override
+    public ShipmentDTO createShipment(ShipmentCreateDTO dto, Principal principal) {
+        String keycloakID = principal.getName();
+
+        Client sender = clientRepository.findByUser_KeycloakId(keycloakID)
+                .orElseThrow(() -> new IllegalArgumentException("Sender (client) not found"));
+
+        Client receiver = clientRepository.findById(dto.getReceiverId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+
+        Shipment shipment = new Shipment();
+        shipment.setSender(sender);
+        shipment.setReceiver(receiver);
+        shipment.setWeight(dto.getWeight());
+        shipment.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment.setCreatedAt(LocalDateTime.now());
+
+        boolean deliveredToOffice = false;
+
+        if (dto.getDeliveryOfficeId() != null) {
+            shipment.setDeliveryOffice(officeRepository.findById(dto.getDeliveryOfficeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Office not found")));
+            shipment.setDeliveryAddress(null);
+            deliveredToOffice = true;
+        } else {
+            shipment.setDeliveryAddress(dto.getDeliveryAddress());
+            shipment.setDeliveryOffice(null);
+        }
+
+        shipment.setPrice(calculatePrice(dto.getWeight(), deliveredToOffice));
+
+        shipment = shipmentRepository.save(shipment);
+        return mapToDTO(shipment);
     }
 
     @Override

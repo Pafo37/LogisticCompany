@@ -1,5 +1,6 @@
 package com.logisticcompany.service.courier;
 
+import com.logisticcompany.data.dto.CourierDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.Shipment;
@@ -7,6 +8,7 @@ import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.CourierRepository;
 import com.logisticcompany.data.repository.ShipmentRepository;
 import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.mapper.CourierMapper;
 import com.logisticcompany.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -25,14 +27,18 @@ public class CourierServiceImpl implements CourierService {
     private final UserService userService;
 
     @Override
-    public Courier getById(Long id) {
+    public CourierDTO getById(Long id) {
         return courierRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Courier not found: " + id));
+                .map(CourierMapper::toDTO)
+                .orElseThrow(() -> new IllegalArgumentException("Courier not found with id: " + id));
     }
 
     @Override
-    public List<Courier> getAll() {
-        return courierRepository.findAll();
+    public List<CourierDTO> getAll() {
+        return courierRepository.findAll()
+                .stream()
+                .map(CourierMapper::toDTO)
+                .toList();
     }
 
     @Override

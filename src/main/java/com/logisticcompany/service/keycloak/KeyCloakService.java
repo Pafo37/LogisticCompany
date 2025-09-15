@@ -8,4 +8,8 @@ public interface KeyCloakService {
 
     String registerUser(String username, String password, String email,
                         String firstName, String lastName, String roleName);
+
+    public void updateUser(String keycloakUserId, String email, String name, String username);
+    public void deleteUser(String keycloakUserId);
+
 }
