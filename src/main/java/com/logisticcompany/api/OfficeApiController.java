@@ -1,7 +1,7 @@
 package com.logisticcompany.api;
 
+import com.logisticcompany.data.dto.CreateOfficeDTO;
 import com.logisticcompany.data.dto.OfficeDTO;
-import com.logisticcompany.data.entity.Office;
 import com.logisticcompany.service.office.OfficeService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,16 +26,13 @@ public class OfficeApiController {
     }
 
     @PostMapping
-    public OfficeDTO createOffice(@RequestBody OfficeDTO office) {
-        return officeService.saveOffice(office);
+    public OfficeDTO createOffice(@RequestBody CreateOfficeDTO officeDTO) {
+        return officeService.createOffice(officeDTO);
     }
 
     @PutMapping("/{id}")
-    public OfficeDTO updateOffice(@PathVariable Long id, @RequestBody Office updatedOffice) {
-        OfficeDTO existing = officeService.getOfficeById(id);
-        existing.setName(updatedOffice.getName());
-        existing.setAddress(updatedOffice.getAddress());
-        return officeService.saveOffice(existing);
+    public OfficeDTO updateOffice(@PathVariable Long id, @RequestBody CreateOfficeDTO officeDTO) {
+        return officeService.updateOffice(id, officeDTO);
     }
 
     @DeleteMapping("/{id}")

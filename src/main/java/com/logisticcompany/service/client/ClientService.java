@@ -1,6 +1,6 @@
 package com.logisticcompany.service.client;
 
-import com.logisticcompany.data.dto.ClientUpdateDTO;
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
@@ -25,7 +25,7 @@ public interface ClientService {
 
     void createClientFromRegistration(RegistrationDTO dto, User user);
 
-    void updateClientAndKeycloak(Long id, ClientUpdateDTO dto);
+    void updateClientAndKeycloak(Long id, UpdateClientDTO dto);
 
     void deleteClientAndKeycloak(Long id);
 

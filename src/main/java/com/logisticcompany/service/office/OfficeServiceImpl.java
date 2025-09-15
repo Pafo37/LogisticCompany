@@ -1,8 +1,10 @@
 package com.logisticcompany.service.office;
 
+import com.logisticcompany.data.dto.CreateOfficeDTO;
 import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.data.entity.Office;
 import com.logisticcompany.data.repository.OfficeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,29 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
+    public OfficeDTO createOffice(CreateOfficeDTO dto) {
+        Office office = new Office();
+        office.setName(dto.getName());
+        office.setAddress(dto.getAddress());
+        Office saved = officeRepository.save(office);
+
+        return mapToDTO(saved);
+    }
+
+    @Override
+    public OfficeDTO updateOffice(Long id, CreateOfficeDTO dto) {
+        Office office = officeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Office not found"));
+
+        office.setName(dto.getName());
+        office.setAddress(dto.getAddress());
+
+        Office updated = officeRepository.save(office);
+        return mapToDTO(updated);
+    }
+
+
+    @Override
     public OfficeDTO updateOffice(Long id, OfficeDTO officeDTO) {
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Office not found for id: " + id));
@@ -52,7 +77,6 @@ public class OfficeServiceImpl implements OfficeService {
     public void deleteOffice(Long id) {
         officeRepository.deleteById(id);
     }
-
 
     @Override
     public Office findEntityById(Long id) {

@@ -1,7 +1,6 @@
 package com.logisticcompany.service.client;
 
-import com.logisticcompany.data.dto.ClientDTO;
-import com.logisticcompany.data.dto.ClientUpdateDTO;
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
@@ -69,7 +68,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void updateClientAndKeycloak(Long id, ClientUpdateDTO dto) {
+    public void updateClientAndKeycloak(Long id, UpdateClientDTO dto) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found: " + id));
 

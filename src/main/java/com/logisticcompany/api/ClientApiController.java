@@ -1,7 +1,7 @@
 package com.logisticcompany.api;
 
 import com.logisticcompany.data.dto.ClientDTO;
-import com.logisticcompany.data.dto.ClientUpdateDTO;
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.service.client.ClientService;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class ClientApiController {
     }
 
     @PutMapping("/{id}")
-    public void updateClient(@PathVariable Long id, @RequestBody ClientUpdateDTO dto) {
+    public void updateClient(@PathVariable Long id, @RequestBody UpdateClientDTO dto) {
         clientService.updateClientAndKeycloak(id, dto);
     }
 

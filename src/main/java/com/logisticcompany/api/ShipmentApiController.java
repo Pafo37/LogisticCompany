@@ -1,6 +1,6 @@
 package com.logisticcompany.api;
 
-import com.logisticcompany.data.dto.ShipmentCreateDTO;
+import com.logisticcompany.data.dto.CreateShipmentDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.service.shipment.ShipmentService;
 import lombok.AllArgsConstructor;
@@ -38,7 +38,7 @@ public class ShipmentApiController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<ShipmentDTO> createShipment(@RequestBody ShipmentCreateDTO createDTO, Principal principal) {
+    public ResponseEntity<ShipmentDTO> createShipment(@RequestBody CreateShipmentDTO createDTO, Principal principal) {
         ShipmentDTO shipment = shipmentService.createShipment(createDTO, principal);
 
         return ResponseEntity.ok(shipment);

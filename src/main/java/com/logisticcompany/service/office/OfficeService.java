@@ -1,5 +1,6 @@
 package com.logisticcompany.service.office;
 
+import com.logisticcompany.data.dto.CreateOfficeDTO;
 import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.data.entity.Office;
 
@@ -12,6 +13,10 @@ public interface OfficeService {
     OfficeDTO getOfficeById(Long id);
 
     OfficeDTO saveOffice(OfficeDTO office);
+
+    OfficeDTO createOffice(CreateOfficeDTO dto);
+
+    OfficeDTO updateOffice(Long id, CreateOfficeDTO dto);
 
     OfficeDTO updateOffice(Long id, OfficeDTO officeDTO);
 

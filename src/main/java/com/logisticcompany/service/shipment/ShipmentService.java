@@ -1,6 +1,6 @@
 package com.logisticcompany.service.shipment;
 
-import com.logisticcompany.data.dto.ShipmentCreateDTO;
+import com.logisticcompany.data.dto.CreateShipmentDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
@@ -18,7 +18,7 @@ public interface ShipmentService {
 
     ShipmentDTO saveShipment(ShipmentDTO shipment,Principal principal);
 
-    ShipmentDTO createShipment(ShipmentCreateDTO dto, Principal principal);
+    ShipmentDTO createShipment(CreateShipmentDTO dto, Principal principal);
 
     void deleteShipment(Long id);
 
