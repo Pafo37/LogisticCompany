@@ -84,10 +84,10 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public BigDecimal calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
-        List<Shipment> shipments = findShipmentEntitiesBetweenDates(startDate, endDate);
-        return shipments.stream()
-                .map(shipment -> BigDecimal.valueOf(shipment.getPrice()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = endDate.plusDays(1).atStartOfDay();
+
+        return shipmentRepository.sumRevenueBetween(start, end);
     }
 
     @Override
@@ -257,12 +257,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
 
         return dto;
-    }
-
-    private List<Shipment> findShipmentEntitiesBetweenDates(LocalDate startDate, LocalDate endDate) {
-        return shipmentRepository.findAllByCreatedAtBetween(
-                startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()
-        );
     }
 
     private Shipment findShipmentEntityById(Long id) {
