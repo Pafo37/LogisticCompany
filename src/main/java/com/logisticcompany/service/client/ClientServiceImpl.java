@@ -15,7 +15,6 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
-    private UserService userService;
 
     @Override
     public List<Client> getAllClients() {

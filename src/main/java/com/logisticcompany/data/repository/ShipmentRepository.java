@@ -18,11 +18,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     List<Shipment> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    List<Shipment> findByStatusOrderByCreatedAtAsc(Shipment.Status status);
-
     List<Shipment> findByAssignedCourier(Courier courier);
-
-    List<Shipment> findByAssignedCourierAndStatusIn(Courier courier, Collection<Shipment.Status> statuses);
 
     @Query("SELECT COALESCE(SUM(s.price), 0) FROM Shipment s WHERE s.createdAt BETWEEN :start AND :end")
     BigDecimal sumRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
