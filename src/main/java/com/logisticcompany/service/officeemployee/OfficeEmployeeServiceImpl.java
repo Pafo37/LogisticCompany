@@ -6,12 +6,10 @@ import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.OfficeEmployeeRepository;
 import com.logisticcompany.data.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor

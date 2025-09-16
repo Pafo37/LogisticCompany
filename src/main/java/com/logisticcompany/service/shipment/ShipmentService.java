@@ -3,7 +3,6 @@ package com.logisticcompany.service.shipment;
 import com.logisticcompany.data.dto.CreateShipmentDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.Client;
-import com.logisticcompany.data.entity.Shipment;
 
 import java.math.BigDecimal;
 import java.security.Principal;

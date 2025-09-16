@@ -199,7 +199,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         boolean deliveredToOffice = dto.getDeliveryOfficeId() != null;
         shipment.setPrice(calculatePrice(dto.getWeight(), deliveredToOffice));
 
-        // Sender is always the logged-in client
         shipment.setSender(clientService.findClientById(principal.getName()));
     }
 
@@ -245,7 +244,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         if (isDeliveredToOffice) {
             return basePrice + weightFactor;
         } else {
-            return (basePrice + weightFactor) * 1.5; // More expensive if delivered to home
+            return (basePrice + weightFactor) * 1.5;
         }
     }
 

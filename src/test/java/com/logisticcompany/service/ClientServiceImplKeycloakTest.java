@@ -24,8 +24,6 @@ class ClientServiceImplKeycloakTest {
     @Mock
     ClientRepository clientRepository;
     @Mock
-    UserRepository userRepository;
-    @Mock
     KeyCloakService keyCloakService;
 
     @InjectMocks
