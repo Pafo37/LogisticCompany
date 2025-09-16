@@ -10,6 +10,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findByUser(User user);
 
-        Optional<Client> findByUser_KeycloakId(String keycloakId);
+    Optional<Client> findByUser_KeycloakId(String keycloakId);
 
 }

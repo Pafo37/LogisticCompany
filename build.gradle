@@ -32,7 +32,12 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.springframework.security:spring-security-test'
+    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {

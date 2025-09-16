@@ -10,6 +10,4 @@ public interface OfficeEmployeeRepository extends JpaRepository<OfficeEmployee, 
 
     Optional<OfficeEmployee> findByUser(User user);
 
-    Optional<OfficeEmployee> findByUser_KeycloakId(String keycloakId);
-
 }
