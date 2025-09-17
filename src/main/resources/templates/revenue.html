@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Revenue</title>
+</head>
+<body>
+<h1>Total Revenue</h1>
+
+<div th:if="${error}" style="color:red;margin-bottom:10px;" th:text="${error}"></div>
+
+<form th:action="@{/revenue}" method="post" style="margin-bottom:16px;">
+    <label>From:
+        <input type="date" name="from" th:value="${from}" required>
+    </label>
+    <label>To:
+        <input type="date" name="to" th:value="${to}" required>
+    </label>
+    <button type="submit">Calculate</button>
+</form>
+
+<div th:if="${totalRevenue != null}">
+    <p>
+        Revenue from
+        <span th:text="${from}">2025-01-01</span>
+        to
+        <span th:text="${to}">2025-01-31</span>:
+        <strong th:text="${totalRevenue}">0.00</strong>
+    </p>
+</div>
+
+<p><a th:href="@{/}">Back to Home</a></p>
+</body>
+</html>
