@@ -1,7 +1,7 @@
 package com.logisticcompany.service.client;
 
-import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 
@@ -14,8 +14,6 @@ public interface ClientService {
     Client getClientById(Long id);
 
     void saveClient(Client client);
-
-    void deleteClient(Long id);
 
     Client getByUser(User user);
 

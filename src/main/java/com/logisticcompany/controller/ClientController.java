@@ -1,5 +1,6 @@
 package com.logisticcompany.controller;
 
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.service.client.ClientService;
 import lombok.AllArgsConstructor;
@@ -33,15 +34,14 @@ public class ClientController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editClient(@PathVariable Long id, @ModelAttribute Client client) {
-        client.setId(id);
-        clientService.saveClient(client);
+    public String editClient(@PathVariable Long id, @ModelAttribute UpdateClientDTO dto) {
+        clientService.updateClientAndKeycloak(id, dto);
         return "redirect:/clients";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id) {
-        clientService.deleteClient(id);
+        clientService.deleteClientAndKeycloak(id);
         return "redirect:/clients";
     }
 

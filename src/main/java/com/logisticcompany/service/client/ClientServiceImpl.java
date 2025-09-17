@@ -1,7 +1,7 @@
 package com.logisticcompany.service.client;
 
-import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
+import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
@@ -33,11 +33,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void saveClient(Client client) {
         clientRepository.save(client);
-    }
-
-    @Override
-    public void deleteClient(Long id) {
-        clientRepository.deleteById(id);
     }
 
     @Override
