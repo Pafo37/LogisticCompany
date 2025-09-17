@@ -18,6 +18,7 @@ The system provides features for registering users, managing shipments, assignin
 - **Shipments**
     - Clients can create shipments.
     - Office employees assign couriers to shipments.
+    - Couriers deliver the shipments.
     - Shipment lifecycle:
         - `PENDING_ASSIGNMENT`
         - `ASSIGNED`
@@ -27,13 +28,6 @@ The system provides features for registering users, managing shipments, assignin
     - Calculate total revenue between two dates.
     - Available via REST API and a **Thymeleaf view**.
 
-- **Offices**
-    - Create, update, delete, and view office entities.
-    - Manage office employees tied to each office.
-
-- **Couriers & Employees**
-    - Manage couriers and office employees.
-    - Mapping between application users and logistics entities.
 
 ---
 
@@ -59,7 +53,11 @@ The system provides features for registering users, managing shipments, assignin
 - `DELETE /api/offices/{id}` → Delete office
 
 ### Thymeleaf Pages
+- `/home` → Home page with navigation depending on the role
 - `/register` → User registration
+- `/clients` → View all clients
+- `/offices` → View all offices
+- `/shipments` → View all shipments
 - `/revenue` → View revenue with date filter
 
 ---
