@@ -4,7 +4,6 @@ import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
 import com.logisticcompany.data.repository.ClientRepository;
-import com.logisticcompany.data.repository.UserRepository;
 import com.logisticcompany.service.client.ClientServiceImpl;
 import com.logisticcompany.service.keycloak.KeyCloakService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +34,9 @@ class ClientServiceImplKeycloakTest {
     }
 
     @Test
-    void updateClientAndKeycloak_updatesBoth() {
+    void testUpdatingClientLocallyAndKeycloak() {
         String keycloakId = "id";
+
         var user = new User();
         user.setId(9L);
         user.setKeycloakId(keycloakId);
