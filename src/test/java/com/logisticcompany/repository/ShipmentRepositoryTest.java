@@ -14,7 +14,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 class ShipmentRepositoryTest {
 
     @Autowired
@@ -38,7 +37,7 @@ class ShipmentRepositoryTest {
     }
 
     @Test
-    void testSumRevenueBetweenTwoDates() {
+    void testSumRevenueOnlyOneShipmentDelivered() {
         Client client1 = clientRepository.save(new Client());
         Client client2 = clientRepository.save(new Client());
         Office office = officeRepository.save(new Office());
@@ -49,23 +48,54 @@ class ShipmentRepositoryTest {
         shipment1.setDeliveryOffice(office);
         shipment1.setWeight(2.0);
         shipment1.setPrice(10.0);
-        shipment1.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment1.setStatus(Status.PENDING_ASSIGNMENT);
         shipmentRepository.save(shipment1);
 
         Shipment shipment2 = new Shipment();
         shipment2.setSender(client1);
         shipment2.setReceiver(client2);
-        shipment2.setDeliveryAddress("Addr");
+        shipment2.setDeliveryAddress("ul.Ekont 45");
         shipment2.setWeight(3.0);
         shipment2.setPrice(15.5);
-        shipment2.setStatus(Shipment.Status.ASSIGNED);
+        shipment2.setStatus(Status.DELIVERED);
         shipmentRepository.save(shipment2);
 
         var start = java.time.LocalDateTime.now().minusHours(1);
         var end = java.time.LocalDateTime.now().plusHours(1);
 
         var sum = shipmentRepository.sumRevenueBetween(start, end);
-        assertThat(sum).isEqualByComparingTo("25.5");
+        assertThat(sum).isEqualByComparingTo("15.5");
+    }
+
+    @Test
+    void testSumRevenueNoShipmentDelivered() {
+        Client client1 = clientRepository.save(new Client());
+        Client client2 = clientRepository.save(new Client());
+        Office office = officeRepository.save(new Office());
+
+        Shipment shipment1 = new Shipment();
+        shipment1.setSender(client1);
+        shipment1.setReceiver(client2);
+        shipment1.setDeliveryOffice(office);
+        shipment1.setWeight(2.0);
+        shipment1.setPrice(10.0);
+        shipment1.setStatus(Status.PENDING_ASSIGNMENT);
+        shipmentRepository.save(shipment1);
+
+        Shipment shipment2 = new Shipment();
+        shipment2.setSender(client1);
+        shipment2.setReceiver(client2);
+        shipment2.setDeliveryAddress("ul.Ekont 45");
+        shipment2.setWeight(3.0);
+        shipment2.setPrice(15.5);
+        shipment2.setStatus(Status.PENDING_ASSIGNMENT);
+        shipmentRepository.save(shipment2);
+
+        var start = java.time.LocalDateTime.now().minusHours(1);
+        var end = java.time.LocalDateTime.now().plusHours(1);
+
+        var sum = shipmentRepository.sumRevenueBetween(start, end);
+        assertThat(sum).isEqualByComparingTo("0");
     }
 
     @Test
@@ -79,7 +109,7 @@ class ShipmentRepositoryTest {
         shipment1.setDeliveryAddress("ul.Petko voivoda 5");
         shipment1.setWeight(2.0);
         shipment1.setPrice(10.0);
-        shipment1.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment1.setStatus(Status.PENDING_ASSIGNMENT);
         shipmentRepository.save(shipment1);
 
         List<Shipment> shipmentList = shipmentRepository.findBySenderOrReceiver(client1, client2);
@@ -99,7 +129,7 @@ class ShipmentRepositoryTest {
         shipment1.setDeliveryAddress("ul.Petko voivoda 5");
         shipment1.setWeight(2.0);
         shipment1.setPrice(10.0);
-        shipment1.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment1.setStatus(Status.PENDING_ASSIGNMENT);
         shipmentRepository.save(shipment1);
 
         List<Shipment> shipmentList = shipmentRepository.findBySenderOrReceiver(client3, client3);
@@ -123,7 +153,7 @@ class ShipmentRepositoryTest {
         shipment.setDeliveryAddress("Somewhere");
         shipment.setWeight(2.0);
         shipment.setPrice(20.0);
-        shipment.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment.setStatus(Status.PENDING_ASSIGNMENT);
         shipmentRepository.save(shipment);
 
         List<Shipment> result =
