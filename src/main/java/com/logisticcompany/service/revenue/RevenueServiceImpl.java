@@ -1,6 +1,6 @@
 package com.logisticcompany.service.revenue;
 
-import com.logisticcompany.data.repository.ShipmentRepository;
+import com.logisticcompany.repository.ShipmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

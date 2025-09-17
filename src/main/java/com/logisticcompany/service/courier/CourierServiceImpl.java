@@ -4,7 +4,7 @@ import com.logisticcompany.data.dto.CourierDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.CourierRepository;
+import com.logisticcompany.repository.CourierRepository;
 import com.logisticcompany.mapper.CourierMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

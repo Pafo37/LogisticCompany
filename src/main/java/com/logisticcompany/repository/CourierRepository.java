@@ -1,4 +1,4 @@
-package com.logisticcompany.data.repository;
+package com.logisticcompany.repository;
 
 import com.logisticcompany.data.entity.Courier;
 import org.springframework.data.jpa.repository.JpaRepository;

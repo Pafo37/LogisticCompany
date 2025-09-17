@@ -3,7 +3,7 @@ package com.logisticcompany.service.shipment;
 import com.logisticcompany.data.dto.CreateShipmentDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.*;
-import com.logisticcompany.data.repository.*;
+import com.logisticcompany.repository.*;
 import com.logisticcompany.service.client.ClientService;
 import com.logisticcompany.service.office.OfficeService;
 import com.logisticcompany.service.officeemployee.OfficeEmployeeService;

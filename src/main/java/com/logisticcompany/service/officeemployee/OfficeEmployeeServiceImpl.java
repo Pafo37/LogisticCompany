@@ -4,8 +4,8 @@ import com.logisticcompany.data.dto.OfficeEmployeeDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.OfficeEmployee;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.OfficeEmployeeRepository;
-import com.logisticcompany.data.repository.UserRepository;
+import com.logisticcompany.repository.OfficeEmployeeRepository;
+import com.logisticcompany.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

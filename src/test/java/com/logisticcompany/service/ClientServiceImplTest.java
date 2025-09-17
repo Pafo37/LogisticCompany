@@ -4,7 +4,7 @@ import com.logisticcompany.data.dto.CourierDTO;
 import com.logisticcompany.data.dto.RegistrationDTO;
 import com.logisticcompany.data.entity.Courier;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.CourierRepository;
+import com.logisticcompany.repository.CourierRepository;
 import com.logisticcompany.service.courier.CourierServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

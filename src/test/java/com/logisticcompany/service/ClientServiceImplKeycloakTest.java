@@ -3,7 +3,7 @@ package com.logisticcompany.service;
 import com.logisticcompany.data.dto.UpdateClientDTO;
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.ClientRepository;
+import com.logisticcompany.repository.ClientRepository;
 import com.logisticcompany.service.client.ClientServiceImpl;
 import com.logisticcompany.service.keycloak.KeyCloakService;
 import org.junit.jupiter.api.BeforeEach;

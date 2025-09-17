@@ -3,7 +3,7 @@ package com.logisticcompany.service;
 import com.logisticcompany.data.dto.CreateOfficeDTO;
 import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.data.entity.Office;
-import com.logisticcompany.data.repository.OfficeRepository;
+import com.logisticcompany.repository.OfficeRepository;
 import com.logisticcompany.service.office.OfficeServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;

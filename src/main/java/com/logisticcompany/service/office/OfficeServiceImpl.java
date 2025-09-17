@@ -3,7 +3,7 @@ package com.logisticcompany.service.office;
 import com.logisticcompany.data.dto.CreateOfficeDTO;
 import com.logisticcompany.data.dto.OfficeDTO;
 import com.logisticcompany.data.entity.Office;
-import com.logisticcompany.data.repository.OfficeRepository;
+import com.logisticcompany.repository.OfficeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

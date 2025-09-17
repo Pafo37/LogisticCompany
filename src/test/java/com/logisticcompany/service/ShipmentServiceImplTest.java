@@ -4,7 +4,7 @@ package com.logisticcompany.service;
 import com.logisticcompany.data.dto.CreateShipmentDTO;
 import com.logisticcompany.data.dto.ShipmentDTO;
 import com.logisticcompany.data.entity.*;
-import com.logisticcompany.data.repository.*;
+import com.logisticcompany.repository.*;
 import com.logisticcompany.service.officeemployee.OfficeEmployeeServiceImpl;
 import com.logisticcompany.service.shipment.ShipmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

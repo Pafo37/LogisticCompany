@@ -1,6 +1,6 @@
 package com.logisticcompany.controller;
 
-import com.logisticcompany.data.repository.CourierRepository;
+import com.logisticcompany.repository.CourierRepository;
 import com.logisticcompany.service.shipment.ShipmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;

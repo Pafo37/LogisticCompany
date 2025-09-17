@@ -2,8 +2,6 @@ package com.logisticcompany.repository;
 
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.User;
-import com.logisticcompany.data.repository.ClientRepository;
-import com.logisticcompany.data.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

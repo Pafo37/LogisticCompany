@@ -1,4 +1,4 @@
-package com.logisticcompany.data.repository;
+package com.logisticcompany.repository;
 
 import com.logisticcompany.data.entity.Client;
 import com.logisticcompany.data.entity.Shipment;
