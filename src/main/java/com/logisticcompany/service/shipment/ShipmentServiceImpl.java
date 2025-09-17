@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.logisticcompany.util.PriceCalculator.calculatePrice;
+
 @Service
 @AllArgsConstructor
 public class ShipmentServiceImpl implements ShipmentService {
@@ -237,15 +239,6 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Shipment not found"));
     }
 
-    public double calculatePrice(double weight, boolean isDeliveredToOffice) {
-        double basePrice = 5.0;
-        double weightFactor = weight * 0.5;
 
-        if (isDeliveredToOffice) {
-            return basePrice + weightFactor;
-        } else {
-            return (basePrice + weightFactor) * 1.5;
-        }
-    }
 
 }
