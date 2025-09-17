@@ -7,9 +7,11 @@ import com.logisticcompany.service.courier.CourierService;
 import com.logisticcompany.service.keycloak.KeyCloakService;
 import com.logisticcompany.service.officeemployee.OfficeEmployeeService;
 import com.logisticcompany.service.user.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +34,15 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegistrationDTO dto, Model model) {
+    public String register(
+            @Valid @ModelAttribute RegistrationDTO dto,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
+            return "register";
+        }
+
         try {
             String keycloakUserId = keyCloakService.registerUser(
                     dto.getUsername(),
