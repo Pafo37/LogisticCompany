@@ -88,7 +88,7 @@ public class KeyCloakServiceImpl implements KeyCloakService {
     @Override
     public void deleteUser(String keycloakUserId) {
         if (keycloakUserId == null || keycloakUserId.isBlank()) {
-            return; // nothing to do
+            return;
         }
         keycloak.realm(REALM).users().get(keycloakUserId).remove();
     }
