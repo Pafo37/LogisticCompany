@@ -40,7 +40,6 @@ public class ClientApiController {
         clientService.deleteClientAndKeycloak(id);
     }
 
-    //TODO: extract to a class if you have the time
     private ClientDTO mapToDTO(Client client) {
         ClientDTO dto = new ClientDTO();
         dto.setId(client.getId());

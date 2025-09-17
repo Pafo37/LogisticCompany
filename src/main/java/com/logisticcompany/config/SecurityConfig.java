@@ -98,7 +98,6 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
-                //TODO: check why it's not redirecting, not important
                 .logout(logout -> logout
                         .logoutSuccessUrl("http://localhost:8081/realms/logistics-app/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/")
                         .invalidateHttpSession(true)
