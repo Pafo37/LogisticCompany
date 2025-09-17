@@ -15,12 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "shipment")
 public class Shipment extends BaseEntity {
 
-    public enum Status {
-        PENDING_ASSIGNMENT,
-        ASSIGNED,
-        DELIVERED
-    }
-
     private String deliveryAddress;
     private double weight;
     private double price;

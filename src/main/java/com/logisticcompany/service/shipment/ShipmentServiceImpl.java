@@ -55,7 +55,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     public ShipmentDTO saveShipment(ShipmentDTO shipmentDTO, Principal principal) {
         Shipment shipment = new Shipment();
         mapDTOToShipment(shipmentDTO, shipment, principal);
-        shipment.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment.setStatus(Status.PENDING_ASSIGNMENT);
         Shipment saved = shipmentRepository.save(shipment);
         return mapToDTO(saved);
     }
@@ -107,7 +107,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
 
         shipment.setAssignedCourier(courier);
-        shipment.setStatus(Shipment.Status.ASSIGNED);
+        shipment.setStatus(Status.ASSIGNED);
         shipmentRepository.save(shipment);
     }
 
@@ -142,7 +142,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setSender(sender);
         shipment.setReceiver(receiver);
         shipment.setWeight(dto.getWeight());
-        shipment.setStatus(Shipment.Status.PENDING_ASSIGNMENT);
+        shipment.setStatus(Status.PENDING_ASSIGNMENT);
         shipment.setCreatedAt(LocalDateTime.now());
 
         boolean deliveredToOffice = false;
@@ -175,7 +175,7 @@ public class ShipmentServiceImpl implements ShipmentService {
             throw new IllegalStateException("You are not assigned to this shipment");
         }
 
-        shipment.setStatus(Shipment.Status.DELIVERED);
+        shipment.setStatus(Status.DELIVERED);
         shipmentRepository.save(shipment);
     }
 
